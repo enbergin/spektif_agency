@@ -1,0 +1,51 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "apps/web/package.json",
+      "use": "@vercel/next"
+    },
+    {
+      "src": "apps/api/src/main.ts",
+      "use": "@vercel/node"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "apps/api/src/main.ts"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "apps/web/$1"
+    }
+  ],
+  "env": {
+    "DATABASE_URL": "@database_url",
+    "JWT_SECRET": "@jwt_secret",
+    "REDIS_URL": "@redis_url",
+    "S3_ENDPOINT": "@s3_endpoint",
+    "S3_ACCESS_KEY": "@s3_access_key",
+    "S3_SECRET_KEY": "@s3_secret_key",
+    "S3_BUCKET": "@s3_bucket",
+    "IYZICO_API_KEY": "@iyzico_api_key",
+    "IYZICO_SECRET_KEY": "@iyzico_secret_key"
+  },
+  "functions": {
+    "apps/api/src/**/*.ts": {
+      "runtime": "nodejs18.x",
+      "maxDuration": 30
+    }
+  },
+  "regions": ["fra1"],
+  "crons": [
+    {
+      "path": "/api/cron/payment-reminders",
+      "schedule": "0 9 * * *"
+    },
+    {
+      "path": "/api/cron/cleanup-notifications",
+      "schedule": "0 2 * * 0"
+    }
+  ]
+}

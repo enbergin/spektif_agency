@@ -1,0 +1,225 @@
+{
+  "common": {
+    "loading": "Loading...",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "add": "Add",
+    "create": "Create",
+    "update": "Update",
+    "search": "Search",
+    "filter": "Filter",
+    "back": "Back",
+    "next": "Next",
+    "previous": "Previous",
+    "close": "Close",
+    "confirm": "Confirm",
+    "yes": "Yes",
+    "no": "No"
+  },
+  "nav": {
+    "home": "Home",
+    "about": "About",
+    "projects": "Projects",
+    "services": "Services",
+    "references": "References",
+    "contact": "Contact",
+    "dashboard": "Dashboard",
+    "boards": "Boards",
+    "calendar": "Calendar",
+    "chat": "Chat",
+    "accounting": "Accounting",
+    "settings": "Settings"
+  },
+  "auth": {
+    "login": "Sign In",
+    "register": "Sign Up",
+    "logout": "Sign Out",
+    "email": "Email",
+    "password": "Password",
+    "confirmPassword": "Confirm Password",
+    "name": "Full Name",
+    "organizationName": "Agency Name",
+    "forgotPassword": "Forgot your password?",
+    "rememberMe": "Remember me",
+    "welcome": "Welcome",
+    "createAccount": "Create account",
+    "alreadyHaveAccount": "Already have an account?",
+    "dontHaveAccount": "Don't have an account?",
+    "loginWithGoogle": "Sign in with Google",
+    "registerWithGoogle": "Sign up with Google",
+    "invalidCredentials": "Invalid email or password",
+    "userAlreadyExists": "This email address is already in use",
+    "passwordsDoNotMatch": "Passwords do not match",
+    "loginDescription": "Sign in to your Spektif Agency account",
+    "registerDescription": "Join Spektif Agency and try free for 14 days",
+    "termsAndConditions": "Terms and Conditions",
+    "privacyPolicy": "Privacy Policy",
+    "acceptTerms": "By creating an account, you agree to our Terms and Conditions and Privacy Policy."
+  },
+  "dashboard": {
+    "title": "Workspace Dashboard",
+    "welcome": "Welcome, {name}!",
+    "description": "Manage your Spektif Agency workspace",
+    "quickActions": "Quick Actions",
+    "recentActivity": "Recent Activity",
+    "projectSummary": "Project Summary",
+    "activeProjects": "Active Projects",
+    "completedTasks": "Completed Tasks",
+    "pendingTasks": "Pending Tasks",
+    "teamMembers": "Team Members"
+  },
+  "boards": {
+    "title": "Boards",
+    "description": "Manage your project boards",
+    "newBoard": "New Board",
+    "createBoard": "Create New Board",
+    "totalBoards": "Total Boards",
+    "activeCards": "Active Cards",
+    "totalMembers": "Total Members",
+    "todayActivity": "Today's Activity",
+    "lastActivity": "Last activity",
+    "memberCount": "{count} members",
+    "cardCount": "{count} cards",
+    "createNewBoard": "Create a new project board and start collaborating with your team"
+  },
+  "board": {
+    "addCard": "Add card",
+    "addList": "Add list",
+    "favorite": "Favorite",
+    "members": "Members",
+    "settings": "Settings",
+    "archive": "Archive",
+    "copy": "Copy",
+    "move": "Move",
+    "dueDate": "Due date",
+    "description": "Description",
+    "attachments": "Attachments",
+    "comments": "Comments",
+    "activity": "Activity",
+    "overdue": "Overdue",
+    "dueSoon": "Due soon",
+    "labels": "Labels"
+  },
+  "calendar": {
+    "title": "Calendar",
+    "description": "Track your project deadlines",
+    "today": "Today",
+    "month": "Month",
+    "week": "Week",
+    "day": "Day",
+    "events": "Events",
+    "noEvents": "No events on this date",
+    "createEvent": "Create Event",
+    "eventTitle": "Event Title",
+    "startDate": "Start Date",
+    "endDate": "End Date",
+    "allDay": "All Day"
+  },
+  "chat": {
+    "title": "Chat",
+    "description": "Team communication",
+    "newConversation": "New Conversation",
+    "directMessage": "Direct Message",
+    "groupChat": "Group Chat",
+    "cardThread": "Card Thread",
+    "typeMessage": "Type a message...",
+    "sendMessage": "Send Message",
+    "online": "Online",
+    "offline": "Offline",
+    "typing": "typing...",
+    "readBy": "Read by:",
+    "delivered": "Delivered",
+    "seen": "Seen"
+  },
+  "accounting": {
+    "title": "Accounting",
+    "description": "Invoices and payments",
+    "subscription": "Subscription",
+    "invoices": "Invoices",
+    "payments": "Payments",
+    "expenses": "Expenses",
+    "salaries": "Salaries",
+    "reports": "Reports",
+    "monthlyReport": "Monthly Report",
+    "revenue": "Revenue",
+    "outstanding": "Outstanding Payments",
+    "totalExpenses": "Total Expenses",
+    "netProfit": "Net Profit",
+    "payNow": "Pay Now",
+    "paid": "Paid",
+    "pending": "Pending",
+    "overdue": "Overdue",
+    "cancelled": "Cancelled"
+  },
+  "organization": {
+    "title": "Organization",
+    "members": "Members",
+    "inviteUser": "Invite User",
+    "removeUser": "Remove User",
+    "changeRole": "Change Role",
+    "roles": {
+      "admin": "Admin",
+      "employee": "Employee",
+      "accountant": "Accountant",
+      "client": "Client"
+    },
+    "inviteEmail": "Email address to invite",
+    "inviteRole": "Select role",
+    "inviteSuccess": "User successfully invited",
+    "removeSuccess": "User successfully removed",
+    "updateSuccess": "User role successfully updated"
+  },
+  "settings": {
+    "title": "Settings",
+    "profile": "Profile",
+    "theme": "Theme",
+    "language": "Language",
+    "notifications": "Notifications",
+    "privacy": "Privacy",
+    "account": "Account",
+    "themes": {
+      "light": "Light",
+      "dark": "Dark",
+      "system": "System"
+    },
+    "languages": {
+      "tr": "Türkçe",
+      "en": "English",
+      "pl": "Polski"
+    }
+  },
+  "hero": {
+    "title": "Spektif Makes You Reach The World.",
+    "subtitle": "Workspace, calendar, and chat system specially designed for your social media agency",
+    "cta": "About Us",
+    "features": {
+      "workspace": {
+        "title": "Workspace",
+        "description": "Trello-style project management"
+      },
+      "calendar": {
+        "title": "Calendar",
+        "description": "Integrated project calendar"
+      },
+      "chat": {
+        "title": "Chat",
+        "description": "Real-time communication"
+      },
+      "accounting": {
+        "title": "Accounting",
+        "description": "Turkish billing system"
+      }
+    }
+  },
+  "footer": {
+    "copyright": "© 2024 Spektif Agency. All rights reserved."
+  },
+  "paywall": {
+    "title": "Payment Required",
+    "description": "Please make your payment to continue",
+    "payButton": "Make Payment",
+    "contactAdmin": "Contact Administrator"
+  }
+}

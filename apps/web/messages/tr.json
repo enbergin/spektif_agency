@@ -1,0 +1,225 @@
+{
+  "common": {
+    "loading": "Yükleniyor...",
+    "save": "Kaydet",
+    "cancel": "İptal",
+    "delete": "Sil",
+    "edit": "Düzenle",
+    "add": "Ekle",
+    "create": "Oluştur",
+    "update": "Güncelle",
+    "search": "Ara",
+    "filter": "Filtrele",
+    "back": "Geri",
+    "next": "İleri",
+    "previous": "Önceki",
+    "close": "Kapat",
+    "confirm": "Onayla",
+    "yes": "Evet",
+    "no": "Hayır"
+  },
+  "nav": {
+    "home": "Ana Sayfa",
+    "about": "Hakkımızda",
+    "projects": "Projelerimiz",
+    "services": "Hizmetlerimiz",
+    "references": "Referanslarımız",
+    "contact": "Bize Ulaşın",
+    "dashboard": "Panel",
+    "boards": "Boards",
+    "calendar": "Takvim",
+    "chat": "Chat",
+    "accounting": "Muhasebe",
+    "settings": "Ayarlar"
+  },
+  "auth": {
+    "login": "Giriş Yap",
+    "register": "Kayıt Ol",
+    "logout": "Çıkış",
+    "email": "Email",
+    "password": "Şifre",
+    "confirmPassword": "Şifre Tekrar",
+    "name": "Ad Soyad",
+    "organizationName": "Ajans Adı",
+    "forgotPassword": "Şifrenizi mi unuttunuz?",
+    "rememberMe": "Beni hatırla",
+    "welcome": "Hoş geldiniz",
+    "createAccount": "Hesap oluşturun",
+    "alreadyHaveAccount": "Zaten hesabınız var mı?",
+    "dontHaveAccount": "Hesabınız yok mu?",
+    "loginWithGoogle": "Google ile Giriş Yap",
+    "registerWithGoogle": "Google ile Kayıt Ol",
+    "invalidCredentials": "Geçersiz email veya şifre",
+    "userAlreadyExists": "Bu email adresi zaten kullanımda",
+    "passwordsDoNotMatch": "Şifreler uyuşmuyor",
+    "loginDescription": "Spektif Agency hesabınıza giriş yapın",
+    "registerDescription": "Spektif Agency'ye katılın ve 14 gün ücretsiz deneyin",
+    "termsAndConditions": "Kullanım Şartları",
+    "privacyPolicy": "Gizlilik Politikası",
+    "acceptTerms": "Hesap oluşturarak Kullanım Şartları ve Gizlilik Politikası'nı kabul etmiş olursunuz."
+  },
+  "dashboard": {
+    "title": "Workspace Dashboard",
+    "welcome": "Hoş geldiniz, {name}!",
+    "description": "Spektif Agency workspace'inizi yönetin",
+    "quickActions": "Hızlı İşlemler",
+    "recentActivity": "Son Aktiviteler",
+    "projectSummary": "Proje Özeti",
+    "activeProjects": "Aktif Projeler",
+    "completedTasks": "Tamamlanan Görevler",
+    "pendingTasks": "Bekleyen Görevler",
+    "teamMembers": "Ekip Üyeleri"
+  },
+  "boards": {
+    "title": "Boards",
+    "description": "Proje panellerinizi yönetin",
+    "newBoard": "Yeni Board",
+    "createBoard": "Yeni Board Oluştur",
+    "totalBoards": "Toplam Board",
+    "activeCards": "Aktif Kartlar",
+    "totalMembers": "Toplam Üye",
+    "todayActivity": "Bugünkü Aktivite",
+    "lastActivity": "Son aktivite",
+    "memberCount": "{count} üye",
+    "cardCount": "{count} kart",
+    "createNewBoard": "Yeni bir proje board'u oluşturun ve ekibinizle işbirliği yapmaya başlayın"
+  },
+  "board": {
+    "addCard": "Kart ekle",
+    "addList": "Liste ekle",
+    "favorite": "Favori",
+    "members": "Üyeler",
+    "settings": "Ayarlar",
+    "archive": "Arşivle",
+    "copy": "Kopyala",
+    "move": "Taşı",
+    "dueDate": "Son tarih",
+    "description": "Açıklama",
+    "attachments": "Ekler",
+    "comments": "Yorumlar",
+    "activity": "Aktivite",
+    "overdue": "Gecikmiş",
+    "dueSoon": "Yakında",
+    "labels": "Etiketler"
+  },
+  "calendar": {
+    "title": "Takvim",
+    "description": "Proje deadlinelarınızı takip edin",
+    "today": "Bugün",
+    "month": "Ay",
+    "week": "Hafta",
+    "day": "Gün",
+    "events": "Etkinlikler",
+    "noEvents": "Bu tarihte etkinlik yok",
+    "createEvent": "Etkinlik Oluştur",
+    "eventTitle": "Etkinlik Başlığı",
+    "startDate": "Başlangıç Tarihi",
+    "endDate": "Bitiş Tarihi",
+    "allDay": "Tüm Gün"
+  },
+  "chat": {
+    "title": "Chat",
+    "description": "Ekip iletişimi",
+    "newConversation": "Yeni Konuşma",
+    "directMessage": "Direkt Mesaj",
+    "groupChat": "Grup Sohbeti",
+    "cardThread": "Kart Konuşması",
+    "typeMessage": "Mesaj yazın...",
+    "sendMessage": "Mesaj Gönder",
+    "online": "Çevrimiçi",
+    "offline": "Çevrimdışı",
+    "typing": "yazıyor...",
+    "readBy": "Okuyan:",
+    "delivered": "İletildi",
+    "seen": "Görüldü"
+  },
+  "accounting": {
+    "title": "Muhasebe",
+    "description": "Faturalar ve ödemeler",
+    "subscription": "Abonelik",
+    "invoices": "Faturalar",
+    "payments": "Ödemeler",
+    "expenses": "Giderler",
+    "salaries": "Maaşlar",
+    "reports": "Raporlar",
+    "monthlyReport": "Aylık Rapor",
+    "revenue": "Gelir",
+    "outstanding": "Bekleyen Ödemeler",
+    "totalExpenses": "Toplam Giderler",
+    "netProfit": "Net Kar",
+    "payNow": "Şimdi Öde",
+    "paid": "Ödendi",
+    "pending": "Bekliyor",
+    "overdue": "Gecikmiş",
+    "cancelled": "İptal Edildi"
+  },
+  "organization": {
+    "title": "Organizasyon",
+    "members": "Üyeler",
+    "inviteUser": "Kullanıcı Davet Et",
+    "removeUser": "Kullanıcıyı Kaldır",
+    "changeRole": "Rol Değiştir",
+    "roles": {
+      "admin": "Yönetici",
+      "employee": "Çalışan",
+      "accountant": "Muhasebeci",
+      "client": "Müşteri"
+    },
+    "inviteEmail": "Davet edilecek email adresi",
+    "inviteRole": "Rol seçin",
+    "inviteSuccess": "Kullanıcı başarıyla davet edildi",
+    "removeSuccess": "Kullanıcı başarıyla kaldırıldı",
+    "updateSuccess": "Kullanıcı rolü başarıyla güncellendi"
+  },
+  "settings": {
+    "title": "Ayarlar",
+    "profile": "Profil",
+    "theme": "Tema",
+    "language": "Dil",
+    "notifications": "Bildirimler",
+    "privacy": "Gizlilik",
+    "account": "Hesap",
+    "themes": {
+      "light": "Açık",
+      "dark": "Koyu",
+      "system": "Sistem"
+    },
+    "languages": {
+      "tr": "Türkçe",
+      "en": "English",
+      "pl": "Polski"
+    }
+  },
+  "hero": {
+    "title": "Spektif Sizi El Aleme Reklam Eder.",
+    "subtitle": "Sosyal medya ajansınız için özel olarak tasarlanmış workspace, takvim ve chat sistemi",
+    "cta": "Hakkımızda",
+    "features": {
+      "workspace": {
+        "title": "Workspace",
+        "description": "Trello-tarzı proje yönetimi"
+      },
+      "calendar": {
+        "title": "Takvim",
+        "description": "Entegre proje takviminiz"
+      },
+      "chat": {
+        "title": "Chat",
+        "description": "Gerçek zamanlı iletişim"
+      },
+      "accounting": {
+        "title": "Muhasebe",
+        "description": "Türk faturalama sistemi"
+      }
+    }
+  },
+  "footer": {
+    "copyright": "© 2024 Spektif Agency. Tüm hakları saklıdır."
+  },
+  "paywall": {
+    "title": "Ödeme Gerekli",
+    "description": "Devam etmek için lütfen ödemenizi yapınız",
+    "payButton": "Ödeme Yap",
+    "contactAdmin": "Yönetici ile İletişime Geçin"
+  }
+}

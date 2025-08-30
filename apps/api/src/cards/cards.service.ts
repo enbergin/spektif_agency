@@ -1,0 +1,669 @@
+import { Injectable, NotFoundException, ForbiddenException } from '@nestjs/common';
+import { PrismaService } from '../prisma/prisma.service';
+import { CreateCardDto, UpdateCardDto, MoveCardDto, AddCardMemberDto } from './dto/cards.dto';
+
+@Injectable()
+export class CardsService {
+  constructor(private prisma: PrismaService) {}
+
+  async findAll(listId?: string, boardId?: string, userId?: string) {
+    const where: any = {};
+
+    if (listId) {
+      where.listId = listId;
+    }
+
+    if (boardId) {
+      where.list = { boardId };
+    }
+
+    // For regular users, only show cards they have access to
+    if (userId) {
+      const user = await this.prisma.user.findUnique({
+        where: { id: userId },
+        include: {
+          orgMembers: true,
+        },
+      });
+
+      // CLIENT role sees only cards they are members of
+      const isClient = user?.orgMembers.some(member => member.role === 'CLIENT');
+      if (isClient) {
+        where.members = {
+          some: {
+            userId,
+          },
+        };
+      }
+    }
+
+    return this.prisma.card.findMany({
+      where,
+      include: {
+        list: {
+          include: {
+            board: true,
+          },
+        },
+        members: {
+          include: {
+            user: {
+              select: {
+                id: true,
+                name: true,
+                email: true,
+                image: true,
+              },
+            },
+          },
+        },
+        attachments: true,
+        comments: {
+          include: {
+            author: {
+              select: {
+                id: true,
+                name: true,
+                image: true,
+              },
+            },
+          },
+          orderBy: { createdAt: 'asc' },
+        },
+        _count: {
+          select: {
+            comments: true,
+            attachments: true,
+          },
+        },
+      },
+      orderBy: { order: 'asc' },
+    });
+  }
+
+  async findOne(id: string, userId: string) {
+    const card = await this.prisma.card.findUnique({
+      where: { id },
+      include: {
+        list: {
+          include: {
+            board: {
+              include: {
+                organization: {
+                  include: {
+                    members: {
+                      where: { userId },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+        members: {
+          include: {
+            user: {
+              select: {
+                id: true,
+                name: true,
+                email: true,
+                image: true,
+              },
+            },
+          },
+        },
+        attachments: true,
+        comments: {
+          include: {
+            author: {
+              select: {
+                id: true,
+                name: true,
+                image: true,
+              },
+            },
+          },
+          orderBy: { createdAt: 'asc' },
+        },
+        creator: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            image: true,
+          },
+        },
+        conversation: {
+          include: {
+            messages: {
+              take: 10,
+              orderBy: { createdAt: 'desc' },
+              include: {
+                author: {
+                  select: {
+                    id: true,
+                    name: true,
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    });
+
+    if (!card) {
+      throw new NotFoundException('Card not found');
+    }
+
+    // Check access permissions
+    const orgMember = card.list.board.organization.members[0];
+    if (!orgMember) {
+      throw new ForbiddenException('Not a member of this organization');
+    }
+
+    // CLIENT role can only see cards they are members of
+    if (orgMember.role === 'CLIENT') {
+      const isCardMember = card.members.some(member => member.userId === userId);
+      if (!isCardMember) {
+        throw new ForbiddenException('No access to this card');
+      }
+    }
+
+    return card;
+  }
+
+  async create(dto: CreateCardDto, userId: string) {
+    // Check if user can create cards in this list/board
+    const list = await this.prisma.list.findUnique({
+      where: { id: dto.listId },
+      include: {
+        board: {
+          include: {
+            organization: {
+              include: {
+                members: {
+                  where: { userId },
+                },
+              },
+            },
+            members: {
+              where: { userId },
+            },
+          },
+        },
+      },
+    });
+
+    if (!list) {
+      throw new NotFoundException('List not found');
+    }
+
+    const orgMember = list.board.organization.members[0];
+    const boardMember = list.board.members[0];
+
+    // Check permissions
+    if (!orgMember || (orgMember.role === 'CLIENT' && (!boardMember || boardMember.role !== 'CLIENT_VIEW'))) {
+      throw new ForbiddenException('Not authorized to create cards');
+    }
+
+    // Get next order
+    const lastCard = await this.prisma.card.findFirst({
+      where: { listId: dto.listId },
+      orderBy: { order: 'desc' },
+    });
+
+    const nextOrder = lastCard ? lastCard.order + 1 : 1;
+
+    // Create card
+    const card = await this.prisma.card.create({
+      data: {
+        listId: dto.listId,
+        title: dto.title,
+        description: dto.description,
+        dueDate: dto.dueDate ? new Date(dto.dueDate) : null,
+        order: nextOrder,
+        createdBy: userId,
+        members: dto.memberIds ? {
+          create: dto.memberIds.map(memberId => ({
+            userId: memberId,
+          })),
+        } : undefined,
+      },
+      include: {
+        list: {
+          include: {
+            board: true,
+          },
+        },
+        members: {
+          include: {
+            user: {
+              select: {
+                id: true,
+                name: true,
+                email: true,
+                image: true,
+              },
+            },
+          },
+        },
+        creator: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            image: true,
+          },
+        },
+      },
+    });
+
+    // Create card thread conversation if it's a project card
+    if (card.members.length > 1) {
+      await this.prisma.conversation.create({
+        data: {
+          organizationId: list.board.organization.id,
+          type: 'CARD_THREAD',
+          title: `${card.title} - Kart Konuşması`,
+          cardId: card.id,
+          participants: {
+            create: [
+              { userId, role: 'admin' },
+              ...card.members
+                .filter(member => member.userId !== userId)
+                .map(member => ({
+                  userId: member.userId,
+                  role: 'member',
+                })),
+            ],
+          },
+        },
+      });
+    }
+
+    // TODO: Create notification for assigned members
+    // TODO: Create activity log entry
+
+    return card;
+  }
+
+  async update(id: string, dto: UpdateCardDto, userId: string) {
+    const card = await this.findOne(id, userId);
+
+    // Check if user can update this card
+    const orgMember = card.list.board.organization.members[0];
+    if (orgMember.role === 'CLIENT') {
+      // Clients can only update cards they are members of and only certain fields
+      const isCardMember = card.members.some(member => member.userId === userId);
+      if (!isCardMember) {
+        throw new ForbiddenException('Cannot update this card');
+      }
+
+      // Restrict what clients can update
+      const allowedFields = ['description'];
+      const updateFields = Object.keys(dto);
+      const hasRestrictedFields = updateFields.some(field => !allowedFields.includes(field));
+
+      if (hasRestrictedFields) {
+        throw new ForbiddenException('Clients can only update description');
+      }
+    }
+
+    const updatedCard = await this.prisma.card.update({
+      where: { id },
+      data: {
+        title: dto.title,
+        description: dto.description,
+        dueDate: dto.dueDate ? new Date(dto.dueDate) : undefined,
+        archived: dto.archived,
+      },
+      include: {
+        list: {
+          include: {
+            board: true,
+          },
+        },
+        members: {
+          include: {
+            user: {
+              select: {
+                id: true,
+                name: true,
+                email: true,
+                image: true,
+              },
+            },
+          },
+        },
+        attachments: true,
+        comments: {
+          include: {
+            author: {
+              select: {
+                id: true,
+                name: true,
+                image: true,
+              },
+            },
+          },
+          orderBy: { createdAt: 'asc' },
+        },
+      },
+    });
+
+    // TODO: Create activity log entry
+    // TODO: Send notifications for important changes
+
+    return updatedCard;
+  }
+
+  async move(id: string, dto: MoveCardDto, userId: string) {
+    const card = await this.findOne(id, userId);
+
+    // Check permissions
+    const orgMember = card.list.board.organization.members[0];
+    if (orgMember.role === 'CLIENT') {
+      throw new ForbiddenException('Clients cannot move cards');
+    }
+
+    // Verify target list exists and is in the same board
+    const targetList = await this.prisma.list.findUnique({
+      where: { id: dto.targetListId },
+      include: {
+        board: true,
+      },
+    });
+
+    if (!targetList || targetList.board.id !== card.list.board.id) {
+      throw new ForbiddenException('Invalid target list');
+    }
+
+    // Move card
+    const movedCard = await this.prisma.$transaction(async (prisma) => {
+      // Update other cards in the target list
+      if (dto.targetListId !== card.listId) {
+        // Moving to different list
+        await prisma.card.updateMany({
+          where: {
+            listId: dto.targetListId,
+            order: { gte: dto.newOrder },
+          },
+          data: {
+            order: { increment: 1 },
+          },
+        });
+
+        // Update cards in the source list
+        await prisma.card.updateMany({
+          where: {
+            listId: card.listId,
+            order: { gt: card.order },
+          },
+          data: {
+            order: { decrement: 1 },
+          },
+        });
+      } else {
+        // Moving within same list
+        if (dto.newOrder > card.order) {
+          // Moving down
+          await prisma.card.updateMany({
+            where: {
+              listId: card.listId,
+              order: { gt: card.order, lte: dto.newOrder },
+            },
+            data: {
+              order: { decrement: 1 },
+            },
+          });
+        } else {
+          // Moving up
+          await prisma.card.updateMany({
+            where: {
+              listId: card.listId,
+              order: { gte: dto.newOrder, lt: card.order },
+            },
+            data: {
+              order: { increment: 1 },
+            },
+          });
+        }
+      }
+
+      // Update the moved card
+      return prisma.card.update({
+        where: { id },
+        data: {
+          listId: dto.targetListId,
+          order: dto.newOrder,
+        },
+        include: {
+          list: {
+            include: {
+              board: true,
+            },
+          },
+          members: {
+            include: {
+              user: {
+                select: {
+                  id: true,
+                  name: true,
+                  email: true,
+                  image: true,
+                },
+              },
+            },
+          },
+        },
+      });
+    });
+
+    // TODO: Create activity log entry
+    // TODO: Send real-time update via WebSocket
+
+    return movedCard;
+  }
+
+  async addMember(cardId: string, dto: AddCardMemberDto, userId: string) {
+    const card = await this.findOne(cardId, userId);
+
+    // Check permissions
+    const orgMember = card.list.board.organization.members[0];
+    if (orgMember.role === 'CLIENT') {
+      throw new ForbiddenException('Clients cannot add members to cards');
+    }
+
+    // Check if member is already added
+    const existingMember = await this.prisma.cardMember.findUnique({
+      where: {
+        cardId_userId: {
+          cardId,
+          userId: dto.userId,
+        },
+      },
+    });
+
+    if (existingMember) {
+      throw new ForbiddenException('User is already a member of this card');
+    }
+
+    // Add member
+    const cardMember = await this.prisma.cardMember.create({
+      data: {
+        cardId,
+        userId: dto.userId,
+      },
+      include: {
+        user: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            image: true,
+          },
+        },
+      },
+    });
+
+    // Add to card conversation if exists
+    const conversation = await this.prisma.conversation.findUnique({
+      where: { cardId },
+    });
+
+    if (conversation) {
+      await this.prisma.participant.create({
+        data: {
+          conversationId: conversation.id,
+          userId: dto.userId,
+          role: 'member',
+        },
+      });
+    }
+
+    // TODO: Create notification for new member
+    // TODO: Create activity log entry
+
+    return cardMember;
+  }
+
+  async removeMember(cardId: string, memberId: string, userId: string) {
+    const card = await this.findOne(cardId, userId);
+
+    // Check permissions
+    const orgMember = card.list.board.organization.members[0];
+    if (orgMember.role === 'CLIENT' && memberId !== userId) {
+      throw new ForbiddenException('Clients can only remove themselves from cards');
+    }
+
+    // Remove member
+    await this.prisma.cardMember.delete({
+      where: {
+        cardId_userId: {
+          cardId,
+          userId: memberId,
+        },
+      },
+    });
+
+    // Remove from card conversation if exists
+    const conversation = await this.prisma.conversation.findUnique({
+      where: { cardId },
+    });
+
+    if (conversation) {
+      await this.prisma.participant.deleteMany({
+        where: {
+          conversationId: conversation.id,
+          userId: memberId,
+        },
+      });
+    }
+
+    // TODO: Create activity log entry
+
+    return { success: true };
+  }
+
+  async addComment(cardId: string, text: string, userId: string) {
+    const card = await this.findOne(cardId, userId);
+
+    const comment = await this.prisma.comment.create({
+      data: {
+        cardId,
+        authorId: userId,
+        text,
+      },
+      include: {
+        author: {
+          select: {
+            id: true,
+            name: true,
+            image: true,
+          },
+        },
+      },
+    });
+
+    // TODO: Create notifications for card members
+    // TODO: Create activity log entry
+
+    return comment;
+  }
+
+  async getComments(cardId: string, userId: string) {
+    await this.findOne(cardId, userId); // Check access
+
+    return this.prisma.comment.findMany({
+      where: { cardId },
+      include: {
+        author: {
+          select: {
+            id: true,
+            name: true,
+            image: true,
+          },
+        },
+      },
+      orderBy: { createdAt: 'asc' },
+    });
+  }
+
+  async remove(id: string, userId: string) {
+    const card = await this.findOne(id, userId);
+
+    // Check permissions (only admins and card creator can delete)
+    const orgMember = card.list.board.organization.members[0];
+    if (orgMember.role === 'CLIENT' || (orgMember.role !== 'ADMIN' && card.createdBy !== userId)) {
+      throw new ForbiddenException('Not authorized to delete this card');
+    }
+
+    // Delete card (cascade will handle relations)
+    await this.prisma.card.delete({
+      where: { id },
+    });
+
+    // TODO: Create activity log entry
+
+    return { success: true };
+  }
+
+  async archive(id: string, userId: string) {
+    const card = await this.findOne(id, userId);
+
+    // Check permissions
+    const orgMember = card.list.board.organization.members[0];
+    if (orgMember.role === 'CLIENT') {
+      throw new ForbiddenException('Clients cannot archive cards');
+    }
+
+    const archivedCard = await this.prisma.card.update({
+      where: { id },
+      data: { archived: true },
+    });
+
+    // TODO: Create activity log entry
+
+    return archivedCard;
+  }
+
+  async unarchive(id: string, userId: string) {
+    const card = await this.findOne(id, userId);
+
+    // Check permissions
+    const orgMember = card.list.board.organization.members[0];
+    if (orgMember.role === 'CLIENT') {
+      throw new ForbiddenException('Clients cannot unarchive cards');
+    }
+
+    const unarchivedCard = await this.prisma.card.update({
+      where: { id },
+      data: { archived: false },
+    });
+
+    // TODO: Create activity log entry
+
+    return unarchivedCard;
+  }
+}

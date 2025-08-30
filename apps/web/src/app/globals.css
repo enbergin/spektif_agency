@@ -1,0 +1,219 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Spektif Brand Colors - Theme Independent */
+    --brand-primary-rgb: 74, 222, 128; /* #4ADE80 */
+    --brand-secondary-rgb: 0, 0, 0; /* #000000 */
+    --brand-accent-rgb: 34, 197, 94; /* #22C55E */
+    --brand-success-rgb: 16, 185, 129; /* #10B981 */
+    --brand-warning-rgb: 245, 158, 11; /* #F59E0B */
+    --brand-error-rgb: 239, 68, 68; /* #EF4444 */
+
+    /* Light theme */
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+    --primary: 142 76% 36%; /* Spektif green in HSL */
+    --primary-foreground: 0 0% 0%; /* Black text on green */
+    --secondary: 210 40% 98%;
+    --secondary-foreground: 222.2 84% 4.9%;
+    --muted: 210 40% 98%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    --accent: 210 40% 98%;
+    --accent-foreground: 222.2 84% 4.9%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 142 76% 36%;
+    --radius: 0.5rem;
+
+    /* Light theme specific */
+    --sidebar-background: 250 50% 98%;
+    --sidebar-foreground: 222.2 84% 4.9%;
+    --header-background: 0 0% 100%;
+    --header-foreground: 222.2 84% 4.9%;
+    --board-background: 220 13% 95%;
+    --list-background: 0 0% 100%;
+    --card-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+    --card-hover-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  }
+
+  .dark {
+    /* Dark theme - Spektif optimized */
+    --background: 222.2 84% 4.9%; /* Very dark blue-gray */
+    --foreground: 210 40% 98%;
+    --card: 217.2 32.6% 17.5%; /* Slightly lighter than background */
+    --card-foreground: 210 40% 98%;
+    --popover: 217.2 32.6% 17.5%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 142 69% 58%; /* Spektif green in dark mode */
+    --primary-foreground: 222.2 84% 4.9%; /* Dark text on green */
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 142 69% 58%;
+
+    /* Dark theme specific */
+    --sidebar-background: 217.2 32.6% 15.5%;
+    --sidebar-foreground: 210 40% 98%;
+    --header-background: 217.2 32.6% 17.5%;
+    --header-foreground: 210 40% 98%;
+    --board-background: 222.2 84% 4.9%;
+    --list-background: 217.2 32.6% 17.5%;
+    --card-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.3), 0 1px 2px -1px rgb(0 0 0 / 0.3);
+    --card-hover-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.3), 0 2px 4px -2px rgb(0 0 0 / 0.3);
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+/* Spektif custom styles */
+.spektif-gradient {
+  background: linear-gradient(
+    135deg,
+    rgb(var(--brand-primary-rgb)) 0%,
+    rgb(var(--brand-accent-rgb)) 100%
+  );
+}
+
+.spektif-logo {
+  color: rgb(var(--brand-primary-rgb));
+}
+
+/* Theme-aware board styles */
+.board-background {
+  background-color: hsl(var(--board-background));
+}
+
+.list-background {
+  background-color: hsl(var(--list-background));
+}
+
+.sidebar-background {
+  background-color: hsl(var(--sidebar-background));
+  color: hsl(var(--sidebar-foreground));
+}
+
+.header-background {
+  background-color: hsl(var(--header-background));
+  color: hsl(var(--header-foreground));
+}
+
+/* Enhanced card styles */
+.card-shadow {
+  box-shadow: var(--card-shadow);
+}
+
+.card-hover-shadow {
+  box-shadow: var(--card-hover-shadow);
+}
+
+/* Custom scrollbar with theme support */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: hsl(var(--muted));
+}
+
+::-webkit-scrollbar-thumb {
+  background: hsl(var(--muted-foreground) / 0.3);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--muted-foreground) / 0.5);
+}
+
+.dark ::-webkit-scrollbar-track {
+  background: hsl(var(--muted));
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: hsl(var(--muted-foreground) / 0.3);
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--muted-foreground) / 0.5);
+}
+
+/* Brand color utilities */
+.text-brand-primary {
+  color: rgb(var(--brand-primary-rgb));
+}
+
+.bg-brand-primary {
+  background-color: rgb(var(--brand-primary-rgb));
+}
+
+.border-brand-primary {
+  border-color: rgb(var(--brand-primary-rgb));
+}
+
+.text-brand-accent {
+  color: rgb(var(--brand-accent-rgb));
+}
+
+.bg-brand-accent {
+  background-color: rgb(var(--brand-accent-rgb));
+}
+
+/* Theme transition */
+* {
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 200ms;
+}
+
+/* Dark mode enhancements */
+.dark {
+  color-scheme: dark;
+}
+
+.dark .spektif-gradient {
+  /* Slightly muted gradient for dark mode */
+  background: linear-gradient(
+    135deg,
+    rgb(var(--brand-primary-rgb) / 0.9) 0%,
+    rgb(var(--brand-accent-rgb) / 0.9) 100%
+  );
+}
+
+/* Focus styles */
+.focus-visible\:ring-brand-primary:focus-visible {
+  --tw-ring-color: rgb(var(--brand-primary-rgb));
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  :root {
+    --border: 0 0% 20%;
+  }
+
+  .dark {
+    --border: 0 0% 80%;
+  }
+}

@@ -1,0 +1,225 @@
+{
+  "common": {
+    "loading": "Ładowanie...",
+    "save": "Zapisz",
+    "cancel": "Anuluj",
+    "delete": "Usuń",
+    "edit": "Edytuj",
+    "add": "Dodaj",
+    "create": "Utwórz",
+    "update": "Aktualizuj",
+    "search": "Szukaj",
+    "filter": "Filtruj",
+    "back": "Wstecz",
+    "next": "Dalej",
+    "previous": "Poprzedni",
+    "close": "Zamknij",
+    "confirm": "Potwierdź",
+    "yes": "Tak",
+    "no": "Nie"
+  },
+  "nav": {
+    "home": "Strona główna",
+    "about": "O nas",
+    "projects": "Projekty",
+    "services": "Usługi",
+    "references": "Referencje",
+    "contact": "Kontakt",
+    "dashboard": "Panel",
+    "boards": "Tablice",
+    "calendar": "Kalendarz",
+    "chat": "Chat",
+    "accounting": "Księgowość",
+    "settings": "Ustawienia"
+  },
+  "auth": {
+    "login": "Zaloguj się",
+    "register": "Zarejestruj się",
+    "logout": "Wyloguj się",
+    "email": "Email",
+    "password": "Hasło",
+    "confirmPassword": "Potwierdź hasło",
+    "name": "Imię i nazwisko",
+    "organizationName": "Nazwa agencji",
+    "forgotPassword": "Zapomniałeś hasła?",
+    "rememberMe": "Zapamiętaj mnie",
+    "welcome": "Witamy",
+    "createAccount": "Utwórz konto",
+    "alreadyHaveAccount": "Masz już konto?",
+    "dontHaveAccount": "Nie masz konta?",
+    "loginWithGoogle": "Zaloguj się z Google",
+    "registerWithGoogle": "Zarejestruj się z Google",
+    "invalidCredentials": "Nieprawidłowy email lub hasło",
+    "userAlreadyExists": "Ten adres email jest już używany",
+    "passwordsDoNotMatch": "Hasła nie pasują do siebie",
+    "loginDescription": "Zaloguj się do swojego konta Spektif Agency",
+    "registerDescription": "Dołącz do Spektif Agency i wypróbuj za darmo przez 14 dni",
+    "termsAndConditions": "Regulamin",
+    "privacyPolicy": "Polityka prywatności",
+    "acceptTerms": "Tworząc konto, zgadzasz się na nasz Regulamin i Politykę prywatności."
+  },
+  "dashboard": {
+    "title": "Panel przestrzeni roboczej",
+    "welcome": "Witamy, {name}!",
+    "description": "Zarządzaj swoją przestrzenią roboczą Spektif Agency",
+    "quickActions": "Szybkie akcje",
+    "recentActivity": "Ostatnia aktywność",
+    "projectSummary": "Podsumowanie projektów",
+    "activeProjects": "Aktywne projekty",
+    "completedTasks": "Ukończone zadania",
+    "pendingTasks": "Oczekujące zadania",
+    "teamMembers": "Członkowie zespołu"
+  },
+  "boards": {
+    "title": "Tablice",
+    "description": "Zarządzaj swoimi tablicami projektów",
+    "newBoard": "Nowa tablica",
+    "createBoard": "Utwórz nową tablicę",
+    "totalBoards": "Łączna liczba tablic",
+    "activeCards": "Aktywne karty",
+    "totalMembers": "Łączna liczba członków",
+    "todayActivity": "Dzisiejsza aktywność",
+    "lastActivity": "Ostatnia aktywność",
+    "memberCount": "{count} członków",
+    "cardCount": "{count} kart",
+    "createNewBoard": "Utwórz nową tablicę projektu i zacznij współpracować ze swoim zespołem"
+  },
+  "board": {
+    "addCard": "Dodaj kartę",
+    "addList": "Dodaj listę",
+    "favorite": "Ulubiony",
+    "members": "Członkowie",
+    "settings": "Ustawienia",
+    "archive": "Archiwum",
+    "copy": "Kopiuj",
+    "move": "Przenieś",
+    "dueDate": "Termin",
+    "description": "Opis",
+    "attachments": "Załączniki",
+    "comments": "Komentarze",
+    "activity": "Aktywność",
+    "overdue": "Przeterminowane",
+    "dueSoon": "Wkrótce termin",
+    "labels": "Etykiety"
+  },
+  "calendar": {
+    "title": "Kalendarz",
+    "description": "Śledź terminy swoich projektów",
+    "today": "Dzisiaj",
+    "month": "Miesiąc",
+    "week": "Tydzień",
+    "day": "Dzień",
+    "events": "Wydarzenia",
+    "noEvents": "Brak wydarzeń w tym dniu",
+    "createEvent": "Utwórz wydarzenie",
+    "eventTitle": "Tytuł wydarzenia",
+    "startDate": "Data rozpoczęcia",
+    "endDate": "Data zakończenia",
+    "allDay": "Cały dzień"
+  },
+  "chat": {
+    "title": "Chat",
+    "description": "Komunikacja zespołu",
+    "newConversation": "Nowa rozmowa",
+    "directMessage": "Wiadomość bezpośrednia",
+    "groupChat": "Czat grupowy",
+    "cardThread": "Wątek karty",
+    "typeMessage": "Napisz wiadomość...",
+    "sendMessage": "Wyślij wiadomość",
+    "online": "Online",
+    "offline": "Offline",
+    "typing": "pisze...",
+    "readBy": "Przeczytane przez:",
+    "delivered": "Dostarczone",
+    "seen": "Wyświetlone"
+  },
+  "accounting": {
+    "title": "Księgowość",
+    "description": "Faktury i płatności",
+    "subscription": "Subskrypcja",
+    "invoices": "Faktury",
+    "payments": "Płatności",
+    "expenses": "Wydatki",
+    "salaries": "Wynagrodzenia",
+    "reports": "Raporty",
+    "monthlyReport": "Raport miesięczny",
+    "revenue": "Przychody",
+    "outstanding": "Zaległe płatności",
+    "totalExpenses": "Łączne wydatki",
+    "netProfit": "Zysk netto",
+    "payNow": "Zapłać teraz",
+    "paid": "Opłacone",
+    "pending": "Oczekujące",
+    "overdue": "Przeterminowane",
+    "cancelled": "Anulowane"
+  },
+  "organization": {
+    "title": "Organizacja",
+    "members": "Członkowie",
+    "inviteUser": "Zaproś użytkownika",
+    "removeUser": "Usuń użytkownika",
+    "changeRole": "Zmień rolę",
+    "roles": {
+      "admin": "Administrator",
+      "employee": "Pracownik",
+      "accountant": "Księgowy",
+      "client": "Klient"
+    },
+    "inviteEmail": "Adres email do zaproszenia",
+    "inviteRole": "Wybierz rolę",
+    "inviteSuccess": "Użytkownik został pomyślnie zaproszony",
+    "removeSuccess": "Użytkownik został pomyślnie usunięty",
+    "updateSuccess": "Rola użytkownika została pomyślnie zaktualizowana"
+  },
+  "settings": {
+    "title": "Ustawienia",
+    "profile": "Profil",
+    "theme": "Motyw",
+    "language": "Język",
+    "notifications": "Powiadomienia",
+    "privacy": "Prywatność",
+    "account": "Konto",
+    "themes": {
+      "light": "Jasny",
+      "dark": "Ciemny",
+      "system": "Systemowy"
+    },
+    "languages": {
+      "tr": "Türkçe",
+      "en": "English",
+      "pl": "Polski"
+    }
+  },
+  "hero": {
+    "title": "Spektif Sprawia, Że Dotrzesz Do Świata.",
+    "subtitle": "Przestrzeń robocza, kalendarz i system czatu specjalnie zaprojektowany dla Twojej agencji mediów społecznościowych",
+    "cta": "O nas",
+    "features": {
+      "workspace": {
+        "title": "Przestrzeń robocza",
+        "description": "Zarządzanie projektami w stylu Trello"
+      },
+      "calendar": {
+        "title": "Kalendarz",
+        "description": "Zintegrowany kalendarz projektu"
+      },
+      "chat": {
+        "title": "Chat",
+        "description": "Komunikacja w czasie rzeczywistym"
+      },
+      "accounting": {
+        "title": "Księgowość",
+        "description": "System rozliczeniowy"
+      }
+    }
+  },
+  "footer": {
+    "copyright": "© 2024 Spektif Agency. Wszelkie prawa zastrzeżone."
+  },
+  "paywall": {
+    "title": "Wymagana płatność",
+    "description": "Aby kontynuować, dokonaj płatności",
+    "payButton": "Zapłać",
+    "contactAdmin": "Skontaktuj się z administratorem"
+  }
+}
