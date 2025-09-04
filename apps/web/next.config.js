@@ -13,8 +13,6 @@ const nextConfig = {
     ],
   },
   env: {
-    NEXTAUTH_SECRET: process.env.NEXTAUTH_SECRET || 'spektif-agency-secret-key-dev',
-    NEXTAUTH_URL: process.env.NEXTAUTH_URL || 'http://localhost:8080',
     NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api',
   },
 }
