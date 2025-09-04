@@ -2,7 +2,6 @@
 const withNextIntl = require('next-intl/plugin')('./src/i18n.ts')
 
 const nextConfig = {
-  output: 'standalone',
   experimental: {
     serverComponentsExternalPackages: ['@prisma/client'],
   },
@@ -14,9 +13,9 @@ const nextConfig = {
     ],
   },
   env: {
-    NEXTAUTH_SECRET: process.env.NEXTAUTH_SECRET,
-    NEXTAUTH_URL: process.env.NEXTAUTH_URL,
-    NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
+    NEXTAUTH_SECRET: process.env.NEXTAUTH_SECRET || 'spektif-agency-secret-key-dev',
+    NEXTAUTH_URL: process.env.NEXTAUTH_URL || 'http://localhost:8080',
+    NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api',
   },
 }
 
