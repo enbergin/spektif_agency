@@ -9,11 +9,11 @@ import bcrypt from 'bcryptjs'
 
 export const authOptions: NextAuthOptions = {
   // adapter: PrismaAdapter(prisma),
-  secret: process.env.NEXTAUTH_SECRET || process.env.NEXT_PUBLIC_NEXTAUTH_SECRET || process.env['nextauth-secret'] || 'spektif-agency-secret-key-production-2024',
+  secret: 'spektif-agency-secret-key-production-2024-hardcoded',
   providers: [
     GoogleProvider({
-      clientId: process.env.GOOGLE_CLIENT_ID || 'dummy-client-id',
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET || 'dummy-client-secret',
+      clientId: 'dummy-client-id-hardcoded',
+      clientSecret: 'dummy-client-secret-hardcoded',
     }),
     CredentialsProvider({
       name: 'credentials',
