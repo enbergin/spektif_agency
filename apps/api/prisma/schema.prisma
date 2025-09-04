@@ -1,107 +1,114 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "sqlite"
-  url      = "file:./dev.db"
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+enum Priority {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+}
+
+enum NotificationType {
+  MENTION
+  COMMENT
+  ASSIGNMENT
+  DUE_DATE
+  BOARD_UPDATE
 }
 
 model User {
-  id            String    @id @default(cuid())
-  email         String    @unique
-  name          String?
-  image         String?
-  password      String?
-  locale        String    @default("tr")
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String?
+  password  String?
+  role      Role     @default(USER)
+  avatar    String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-  // Relations
-  orgMembers              OrgMember[]
-  boardMembers            BoardMember[]
-  cardMembers             CardMember[]
-  comments                Comment[]
-  activities              Activity[]
-  createdCards            Card[]                    @relation("CardCreator")
-  participants            Participant[]
-  messages                Message[]
-  salaries                Salary[]
-  notifications           Notification[]
-  notificationPreferences NotificationPreference[]
+  orgMembers       OrgMember[]
+  createdBoards    Board[]        @relation("BoardCreator")
+  boardMembers     BoardMember[]
+  assignedCards    Card[]         @relation("CardAssignee")
+  comments         Comment[]
+  chatParticipants Participant[]
+  sentMessages     Message[]
+  notifications    Notification[]
+  activities       Activity[]
 
   @@map("users")
 }
 
 model Organization {
-  id                 String             @id @default(cuid())
-  name               String
-  branding           String?            // JSON string for Logo, colors, etc.
-  subscriptionStatus String @default("ACTIVE") // ACTIVE, PAST_DUE, BLOCKED, CANCELLED
-  createdAt          DateTime           @default(now())
-  updatedAt          DateTime           @updatedAt
+  id          String   @id @default(cuid())
+  name        String
+  slug        String   @unique
+  description String?
+  avatar      String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
-  // Relations
-  members                 OrgMember[]
-  boards                  Board[]
-  activities              Activity[]
-  conversations           Conversation[]
-  subscription            Subscription?
-  invoices                Invoice[]
-  expenses                Expense[]
-  salaries                Salary[]
-  notifications           Notification[]
-  notificationPreferences NotificationPreference[]
+  members       OrgMember[]
+  boards        Board[]
+  conversations Conversation[]
+  subscriptions Subscription[]
+  invoices      Invoice[]
 
   @@map("organizations")
 }
 
 model OrgMember {
-  id             String       @id @default(cuid())
-  organizationId String
-  userId         String
-  role           String       @default("EMPLOYEE") // ADMIN, EMPLOYEE, ACCOUNTANT, CLIENT
-  createdAt      DateTime     @default(now())
-  updatedAt      DateTime     @updatedAt
+  id     String @id @default(cuid())
+  userId String
+  orgId  String
+  role   Role   @default(USER)
 
-  // Relations
-  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  organization Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
 
-  @@unique([organizationId, userId])
+  @@unique([userId, orgId])
   @@map("org_members")
 }
 
 model Board {
-  id             String        @id @default(cuid())
-  organizationId String
+  id             String   @id @default(cuid())
   title          String
   description    String?
-  color          String?
-  createdAt      DateTime      @default(now())
-  updatedAt      DateTime      @updatedAt
+  backgroundUrl  String?
+  organizationId String
+  createdBy      String
+  position       Int      @default(0)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
 
-  // Relations
-  organization   Organization  @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  members        BoardMember[]
-  lists          List[]
-  notifications  Notification[]
+  organization Organization  @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  creator      User          @relation("BoardCreator", fields: [createdBy], references: [id])
+  lists        List[]
+  members      BoardMember[]
+  activities   Activity[]
 
   @@map("boards")
 }
 
 model BoardMember {
-  id      String    @id @default(cuid())
+  id      String @id @default(cuid())
   boardId String
   userId  String
-  role    String @default("VIEWER") // ADMIN, EDITOR, VIEWER, CLIENT_VIEW
+  role    Role   @default(USER)
 
-  // Relations
-  board   Board     @relation(fields: [boardId], references: [id], onDelete: Cascade)
-  user    User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  board Board @relation(fields: [boardId], references: [id], onDelete: Cascade)
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([boardId, userId])
   @@map("board_members")
@@ -109,39 +116,37 @@ model BoardMember {
 
 model List {
   id        String   @id @default(cuid())
-  boardId   String
   title     String
-  order     Int
+  boardId   String
+  position  Int      @default(0)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  // Relations
-  board     Board    @relation(fields: [boardId], references: [id], onDelete: Cascade)
-  cards     Card[]
+  board Board  @relation(fields: [boardId], references: [id], onDelete: Cascade)
+  cards Card[]
 
   @@map("lists")
 }
 
 model Card {
   id          String    @id @default(cuid())
-  listId      String
   title       String
   description String?
+  listId      String
+  assignedTo  String?
+  position    Int       @default(0)
+  priority    Priority? @default(MEDIUM)
   dueDate     DateTime?
-  order       Int
-  archived    Boolean   @default(false)
-  createdBy   String
+  completed   Boolean   @default(false)
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 
-  // Relations
-  list         List           @relation(fields: [listId], references: [id], onDelete: Cascade)
-  creator      User           @relation("CardCreator", fields: [createdBy], references: [id])
-  members      CardMember[]
-  attachments  Attachment[]
-  comments     Comment[]
-  conversation Conversation?
-  notifications Notification[]
+  list     List       @relation(fields: [listId], references: [id], onDelete: Cascade)
+  assignee User?      @relation("CardAssignee", fields: [assignedTo], references: [id])
+  labels   Label[]
+  comments Comment[]
+  members  CardMember[]
+  activities Activity[]
 
   @@map("cards")
 }
@@ -151,276 +156,161 @@ model CardMember {
   cardId String
   userId String
 
-  // Relations
-  card   Card   @relation(fields: [cardId], references: [id], onDelete: Cascade)
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  card Card @relation(fields: [cardId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([cardId, userId])
   @@map("card_members")
 }
 
-model Attachment {
-  id        String    @id @default(cuid())
-  cardId    String?
-  messageId String?
-  url       String
-  name      String
-  size      Int
-  createdAt DateTime  @default(now())
+model Label {
+  id      String @id @default(cuid())
+  name    String
+  color   String
+  boardId String
 
-  // Relations
-  card      Card?     @relation(fields: [cardId], references: [id], onDelete: Cascade)
-  message   Message?  @relation(fields: [messageId], references: [id], onDelete: Cascade)
+  cards Card[]
 
-  @@map("attachments")
+  @@map("labels")
 }
 
 model Comment {
   id        String   @id @default(cuid())
+  content   String
   cardId    String
   authorId  String
-  text      String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  // Relations
-  card      Card     @relation(fields: [cardId], references: [id], onDelete: Cascade)
-  author    User     @relation(fields: [authorId], references: [id])
+  card   Card @relation(fields: [cardId], references: [id], onDelete: Cascade)
+  author User @relation(fields: [authorId], references: [id], onDelete: Cascade)
 
   @@map("comments")
 }
 
-model Activity {
-  id             String       @id @default(cuid())
-  organizationId String
-  actorId        String
-  action         String
-  targetType     String
-  targetId       String
-  meta           String?      // JSON string
-  createdAt      DateTime     @default(now())
-
-  // Relations
-  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  actor          User         @relation(fields: [actorId], references: [id])
-
-  @@map("activities")
-}
-
 model Conversation {
-  id             String            @id @default(cuid())
-  organizationId String
-  type           String            // DM, GROUP, CARD_THREAD
-  cardId         String?           @unique
-  title          String?
-  createdAt      DateTime          @default(now())
-  updatedAt      DateTime          @updatedAt
+  id             String   @id @default(cuid())
+  name           String?
+  type           String   @default("group")
+  organizationId String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
 
-  // Relations
-  organization   Organization      @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  card           Card?             @relation(fields: [cardId], references: [id], onDelete: Cascade)
-  participants   Participant[]
-  messages       Message[]
-  notifications  Notification[]
+  organization Organization?  @relation(fields: [organizationId], references: [id], onDelete: SetNull)
+  participants Participant[]
+  messages     Message[]
 
   @@map("conversations")
 }
 
 model Participant {
-  id             String       @id @default(cuid())
-  conversationId String
+  id             String @id @default(cuid())
   userId         String
-  role           String       @default("member")
-  joinedAt       DateTime     @default(now())
+  conversationId String
+  role           String @default("member")
 
-  // Relations
-  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
-  user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  conversation Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
 
-  @@unique([conversationId, userId])
+  @@unique([userId, conversationId])
   @@map("participants")
 }
 
 model Message {
-  id             String        @id @default(cuid())
+  id             String   @id @default(cuid())
+  content        String
   conversationId String
-  authorId       String
-  text           String
-  replyToId      String?
-  createdAt      DateTime      @default(now())
-  updatedAt      DateTime      @updatedAt
+  senderId       String
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
 
-  // Relations
-  conversation   Conversation  @relation(fields: [conversationId], references: [id], onDelete: Cascade)
-  author         User          @relation(fields: [authorId], references: [id])
-  replyTo        Message?      @relation("MessageReplies", fields: [replyToId], references: [id])
-  replies        Message[]     @relation("MessageReplies")
-  attachments    Attachment[]
+  conversation Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  sender       User         @relation(fields: [senderId], references: [id], onDelete: Cascade)
 
   @@map("messages")
 }
 
+model Notification {
+  id        String           @id @default(cuid())
+  title     String
+  message   String
+  type      NotificationType
+  userId    String
+  read      Boolean          @default(false)
+  data      Json?
+  createdAt DateTime         @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("notifications")
+}
+
+model Activity {
+  id        String   @id @default(cuid())
+  action    String
+  entityId  String
+  entityType String
+  userId    String
+  boardId   String?
+  cardId    String?
+  data      Json?
+  createdAt DateTime @default(now())
+
+  user  User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  board Board? @relation(fields: [boardId], references: [id], onDelete: SetNull)
+  card  Card?  @relation(fields: [cardId], references: [id], onDelete: SetNull)
+
+  @@map("activities")
+}
+
 model Subscription {
-  id             String             @id @default(cuid())
-  organizationId String             @unique
+  id             String   @id @default(cuid())
+  organizationId String
   plan           String
-  price          Int                // in kuruş (TRY cents)
-  status         String @default("ACTIVE") // ACTIVE, PAST_DUE, BLOCKED, CANCELLED
+  status         String
   currentPeriodStart DateTime
   currentPeriodEnd   DateTime
-  createdAt      DateTime           @default(now())
-  updatedAt      DateTime           @updatedAt
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
 
-  // Relations
-  organization   Organization       @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  invoices       Invoice[]
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  invoices     Invoice[]
+  payments     Payment[]
 
   @@map("subscriptions")
 }
 
 model Invoice {
-  id             String        @id @default(cuid())
+  id             String   @id @default(cuid())
   organizationId String
   subscriptionId String?
-  month          String        // YYYY-MM format
-  amount         Int           // in kuruş (TRY cents)
-  currency       String        @default("TRY")
-  status         String        @default("PENDING") // PENDING, PAID, OVERDUE, CANCELLED
-  dueDate        DateTime
+  amount         Int
+  currency       String   @default("TRY")
+  status         String
+  dueDate        DateTime?
   paidAt         DateTime?
-  createdAt      DateTime      @default(now())
-  updatedAt      DateTime      @updatedAt
+  createdAt      DateTime @default(now())
 
-  // Relations
-  organization   Organization  @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  subscription   Subscription? @relation(fields: [subscriptionId], references: [id])
-  payments       Payment[]
-  notifications  Notification[]
+  organization Organization  @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  subscription Subscription? @relation(fields: [subscriptionId], references: [id], onDelete: SetNull)
+  payments     Payment[]
 
   @@map("invoices")
 }
 
 model Payment {
-  id         String   @id @default(cuid())
-  invoiceId  String
-  provider   String   // "iyzico", "paytr", etc.
-  externalId String   // External payment ID
-  amount     Int      // in kuruş (TRY cents)
-  paidAt     DateTime
-  createdAt  DateTime @default(now())
+  id             String   @id @default(cuid())
+  invoiceId      String
+  subscriptionId String?
+  amount         Int
+  currency       String   @default("TRY")
+  method         String
+  status         String
+  transactionId  String?
+  createdAt      DateTime @default(now())
 
-  // Relations
-  invoice    Invoice  @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+  invoice      Invoice       @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+  subscription Subscription? @relation(fields: [subscriptionId], references: [id], onDelete: SetNull)
 
   @@map("payments")
-}
-
-model Expense {
-  id             String       @id @default(cuid())
-  organizationId String
-  category       String
-  vendor         String
-  amount         Int          // in kuruş (TRY cents)
-  date           DateTime
-  note           String?
-  createdAt      DateTime     @default(now())
-  updatedAt      DateTime     @updatedAt
-
-  // Relations
-  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-
-  @@map("expenses")
-}
-
-model Salary {
-  id             String       @id @default(cuid())
-  organizationId String
-  userId         String
-  amount         Int          // in kuruş (TRY cents)
-  period         String       // YYYY-MM format
-  startDate      DateTime
-  endDate        DateTime?
-  createdAt      DateTime     @default(now())
-  updatedAt      DateTime     @updatedAt
-
-  // Relations
-  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  user           User         @relation(fields: [userId], references: [id])
-
-  @@map("salaries")
-}
-
-model Notification {
-  id             String              @id @default(cuid())
-  organizationId String?
-  userId         String
-  type           String              // CARD_ASSIGNMENT, PAYMENT_DUE, etc.
-  priority       String @default("MEDIUM") // LOW, MEDIUM, HIGH, URGENT
-  title          String
-  message        String
-  isRead         Boolean             @default(false)
-  readAt         DateTime?
-
-  // Optional relations to specific entities
-  cardId         String?
-  boardId        String?
-  conversationId String?
-  invoiceId      String?
-
-  // Metadata for additional context
-  metadata       String?             // JSON string for additional data
-
-  // Action URL for click handling
-  actionUrl      String?
-
-  createdAt      DateTime            @default(now())
-  updatedAt      DateTime            @updatedAt
-
-  // Relations
-  organization   Organization?       @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  user           User                @relation(fields: [userId], references: [id], onDelete: Cascade)
-  card           Card?               @relation(fields: [cardId], references: [id], onDelete: Cascade)
-  board          Board?              @relation(fields: [boardId], references: [id], onDelete: Cascade)
-  conversation   Conversation?       @relation(fields: [conversationId], references: [id], onDelete: Cascade)
-  invoice        Invoice?            @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
-
-  @@map("notifications")
-}
-
-model NotificationPreference {
-  id                    String   @id @default(cuid())
-  userId                String
-  organizationId        String?
-
-  // Email notification settings
-  emailCardAssignment   Boolean  @default(true)
-  emailCardDueSoon      Boolean  @default(true)
-  emailCardOverdue      Boolean  @default(true)
-  emailChatMention      Boolean  @default(true)
-  emailPaymentDue       Boolean  @default(true)
-  emailPaymentOverdue   Boolean  @default(true)
-  emailSystemUpdate     Boolean  @default(false)
-
-  // In-app notification settings
-  inAppCardAssignment   Boolean  @default(true)
-  inAppCardDueSoon      Boolean  @default(true)
-  inAppCardOverdue      Boolean  @default(true)
-  inAppChatMention      Boolean  @default(true)
-  inAppChatReply        Boolean  @default(true)
-  inAppPaymentDue       Boolean  @default(true)
-  inAppSystemUpdate     Boolean  @default(true)
-
-  // Digest preferences
-  dailyDigest           Boolean  @default(false)
-  weeklyDigest          Boolean  @default(true)
-
-  createdAt             DateTime @default(now())
-  updatedAt             DateTime @updatedAt
-
-  // Relations
-  user                  User         @relation(fields: [userId], references: [id], onDelete: Cascade)
-  organization          Organization? @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-
-  @@unique([userId, organizationId])
-  @@map("notification_preferences")
 }

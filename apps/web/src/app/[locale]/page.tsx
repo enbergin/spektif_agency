@@ -44,13 +44,13 @@ export default function HomePage() {
           <LanguageSwitcher />
           <ThemeSwitcher />
           <Link
-            href="/auth/login"
+            href="/tr/auth/login"
             className="px-4 py-2 text-sm border border-border rounded-md hover:bg-secondary transition-colors"
           >
             {t('auth.login')}
           </Link>
           <Link
-            href="/auth/register"
+            href="/tr/auth/register"
             className="px-4 py-2 text-sm bg-brand-primary text-black rounded-md hover:bg-brand-accent transition-colors"
           >
             {t('auth.register')}
@@ -71,7 +71,7 @@ export default function HomePage() {
                   {t('hero.subtitle')}
                 </p>
                 <Link
-                  href="/auth/register"
+                  href="/tr/auth/register"
                   className="inline-flex items-center px-6 py-3 bg-black text-white rounded-md hover:bg-black/90 transition-colors"
                 >
                   {t('hero.cta')}
