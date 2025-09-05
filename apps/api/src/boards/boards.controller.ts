@@ -53,7 +53,7 @@ export class BoardsController {
   }
 
   @Post(':id/reorder-lists')
-  reorderLists(@Param('id') boardId: string, @Body() body: { listOrders: { id: string; position: number }[] }, @Req() req) {
+  reorderLists(@Param('id') boardId: string, @Body() body: { listOrders: { id: string; // position: // Use order instead number }[] }, @Req() req) {
     return this.boardsService.reorderLists(boardId, body.listOrders, req.user.id);
   }
 }

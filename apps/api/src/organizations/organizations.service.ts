@@ -44,7 +44,7 @@ export class OrganizationsService {
                 id: true,
                 name: true,
                 email: true,
-                avatar: true,
+                // avatar: true // Use name only for now,
               },
             },
           },
@@ -77,7 +77,7 @@ export class OrganizationsService {
     // Check if user is admin
     const member = await this.prisma.orgMember.findUnique({
       where: {
-        userId_orgId: {
+        /* userId_orgId */ organizationId_userId: {
           orgId: id,
           userId,
         },
@@ -98,7 +98,7 @@ export class OrganizationsService {
     // Check if inviter is admin
     const inviter = await this.prisma.orgMember.findUnique({
       where: {
-        userId_orgId: {
+        /* userId_orgId */ organizationId_userId: {
           orgId: organizationId,
           userId: inviterId,
         },
@@ -127,7 +127,7 @@ export class OrganizationsService {
     // Check if already member
     const existingMember = await this.prisma.orgMember.findUnique({
       where: {
-        userId_orgId: {
+        /* userId_orgId */ organizationId_userId: {
           orgId: organizationId,
           userId: user.id,
         },
@@ -156,7 +156,7 @@ export class OrganizationsService {
     // Check if admin
     const admin = await this.prisma.orgMember.findUnique({
       where: {
-        userId_orgId: {
+        /* userId_orgId */ organizationId_userId: {
           orgId: organizationId,
           userId: adminId,
         },
@@ -183,7 +183,7 @@ export class OrganizationsService {
 
     await this.prisma.orgMember.delete({
       where: {
-        userId_orgId: {
+        /* userId_orgId */ organizationId_userId: {
           orgId: organizationId,
           userId,
         },
@@ -197,7 +197,7 @@ export class OrganizationsService {
     // Check if admin
     const admin = await this.prisma.orgMember.findUnique({
       where: {
-        userId_orgId: {
+        /* userId_orgId */ organizationId_userId: {
           orgId: organizationId,
           userId: adminId,
         },
@@ -210,7 +210,7 @@ export class OrganizationsService {
 
     return this.prisma.orgMember.update({
       where: {
-        userId_orgId: {
+        /* userId_orgId */ organizationId_userId: {
           orgId: organizationId,
           userId,
         },

@@ -37,7 +37,7 @@ export class AuthService {
     const organization = await this.prisma.organization.create({
       data: {
         name: dto.organizationName,
-        slug: dto.organizationName.toLowerCase().replace(/\s+/g, '-'),
+        // slug: // Field not needed dto.organizationName.toLowerCase().replace(/\s+/g, '-'),
         members: {
           create: {
             userId: user.id,
