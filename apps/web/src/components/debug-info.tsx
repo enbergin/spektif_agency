@@ -29,9 +29,10 @@ export function DebugInfo() {
     return () => clearInterval(interval)
   }, [])
 
-  if (process.env.NODE_ENV === 'production') {
-    return null // Hide in production unless needed
-  }
+  // Always show debug info for now
+  // if (process.env.NODE_ENV === 'production') {
+  //   return null // Hide in production unless needed
+  // }
 
   return (
     <div className="fixed bottom-4 right-4 bg-black/80 text-white p-3 rounded-lg text-xs font-mono z-50">

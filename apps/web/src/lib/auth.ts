@@ -29,6 +29,7 @@ export const authOptions: NextAuthOptions = {
         try {
           // Call our backend API - use process.env or fallback for server-side vs client-side
           const apiUrl = process.env.API_URL || process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api'
+          console.log('🔐 NextAuth trying to login with API URL:', apiUrl)
           const response = await fetch(`${apiUrl}/auth/login`, {
             method: 'POST',
             headers: {
