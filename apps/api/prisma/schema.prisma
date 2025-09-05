@@ -3,36 +3,37 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "sqlite"
   url      = env("DATABASE_URL")
 }
 
-enum Role {
-  USER
-  ADMIN
-}
+// SQLite doesn't support enums, using String instead
+// enum Role {
+//   USER
+//   ADMIN
+// }
 
-enum Priority {
-  LOW
-  MEDIUM
-  HIGH
-  URGENT
-}
+// enum Priority {
+//   LOW
+//   MEDIUM
+//   HIGH
+//   URGENT
+// }
 
-enum NotificationType {
-  MENTION
-  COMMENT
-  ASSIGNMENT
-  DUE_DATE
-  BOARD_UPDATE
-}
+// enum NotificationType {
+//   MENTION
+//   COMMENT
+//   ASSIGNMENT
+//   DUE_DATE
+//   BOARD_UPDATE
+// }
 
 model User {
   id        String   @id @default(cuid())
   email     String   @unique
   name      String?
   password  String?
-  role      Role     @default(USER)
+  role      String   @default("USER")
   avatar    String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -73,7 +74,7 @@ model OrgMember {
   id             String @id @default(cuid())
   userId         String
   organizationId String
-  role           Role   @default(USER)
+  role           String @default("USER")
 
   user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
   organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
@@ -106,7 +107,7 @@ model BoardMember {
   id      String @id @default(cuid())
   boardId String
   userId  String
-  role    Role   @default(USER)
+  role    String @default("USER")
 
   board Board @relation(fields: [boardId], references: [id], onDelete: Cascade)
   user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -136,7 +137,7 @@ model Card {
   listId      String
   assignedTo  String?
   position    Int       @default(0)
-  priority    Priority? @default(MEDIUM)
+  priority    String?   @default("MEDIUM")
   dueDate     DateTime?
   completed   Boolean   @default(false)
   createdAt   DateTime  @default(now())
@@ -235,10 +236,10 @@ model Notification {
   id        String           @id @default(cuid())
   title     String
   message   String
-  type      NotificationType
+  type      String
   userId    String
   read      Boolean          @default(false)
-  data      Json?
+  data      String?
   createdAt DateTime         @default(now())
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -254,7 +255,7 @@ model Activity {
   userId    String
   boardId   String?
   cardId    String?
-  data      Json?
+  data      String?
   createdAt DateTime @default(now())
 
   user  User   @relation(fields: [userId], references: [id], onDelete: Cascade)
