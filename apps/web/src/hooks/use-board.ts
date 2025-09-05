@@ -18,7 +18,7 @@ export function useBoard(boardId: string) {
 
     try {
       setLoading(true)
-      const data = await apiClient.getBoard(boardId)
+      const data = await apiClient.getBoard(boardId) as Board
       setBoard(data)
       setError(null)
     } catch (err) {
