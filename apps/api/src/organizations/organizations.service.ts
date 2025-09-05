@@ -29,7 +29,7 @@ export class OrganizationsService {
       role: member.role,
       memberCount: member.organization._count.members,
       boardCount: member.organization._count.boards,
-      subscriptionStatus: member.organization.subscriptionStatus,
+      // subscriptionStatus: member.organization.subscriptionStatus, // Field doesn't exist in current schema
     }));
   }
 
@@ -44,7 +44,7 @@ export class OrganizationsService {
                 id: true,
                 name: true,
                 email: true,
-                image: true,
+                avatar: true,
               },
             },
           },
@@ -77,8 +77,8 @@ export class OrganizationsService {
     // Check if user is admin
     const member = await this.prisma.orgMember.findUnique({
       where: {
-        organizationId_userId: {
-          organizationId: id,
+        userId_orgId: {
+          orgId: id,
           userId,
         },
       },
@@ -98,8 +98,8 @@ export class OrganizationsService {
     // Check if inviter is admin
     const inviter = await this.prisma.orgMember.findUnique({
       where: {
-        organizationId_userId: {
-          organizationId,
+        userId_orgId: {
+          orgId: organizationId,
           userId: inviterId,
         },
       },
@@ -127,8 +127,8 @@ export class OrganizationsService {
     // Check if already member
     const existingMember = await this.prisma.orgMember.findUnique({
       where: {
-        organizationId_userId: {
-          organizationId,
+        userId_orgId: {
+          orgId: organizationId,
           userId: user.id,
         },
       },
@@ -141,7 +141,7 @@ export class OrganizationsService {
     // Add to organization
     await this.prisma.orgMember.create({
       data: {
-        organizationId,
+        orgId: organizationId,
         userId: user.id,
         role: (dto.role as any) || 'EMPLOYEE',
       },
@@ -156,8 +156,8 @@ export class OrganizationsService {
     // Check if admin
     const admin = await this.prisma.orgMember.findUnique({
       where: {
-        organizationId_userId: {
-          organizationId,
+        userId_orgId: {
+          orgId: organizationId,
           userId: adminId,
         },
       },
@@ -171,7 +171,7 @@ export class OrganizationsService {
     if (userId === adminId) {
       const adminCount = await this.prisma.orgMember.count({
         where: {
-          organizationId,
+          orgId: organizationId,
           role: 'ADMIN',
         },
       });
@@ -183,8 +183,8 @@ export class OrganizationsService {
 
     await this.prisma.orgMember.delete({
       where: {
-        organizationId_userId: {
-          organizationId,
+        userId_orgId: {
+          orgId: organizationId,
           userId,
         },
       },
@@ -197,8 +197,8 @@ export class OrganizationsService {
     // Check if admin
     const admin = await this.prisma.orgMember.findUnique({
       where: {
-        organizationId_userId: {
-          organizationId,
+        userId_orgId: {
+          orgId: organizationId,
           userId: adminId,
         },
       },
@@ -210,8 +210,8 @@ export class OrganizationsService {
 
     return this.prisma.orgMember.update({
       where: {
-        organizationId_userId: {
-          organizationId,
+        userId_orgId: {
+          orgId: organizationId,
           userId,
         },
       },
