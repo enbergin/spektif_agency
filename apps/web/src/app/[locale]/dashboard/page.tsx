@@ -356,9 +356,13 @@ function TemplatesView({ session }: { session: any }) {
         console.log('Backend token:', token)
         
         let response
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api'
+        console.log('🔗 API URL:', apiUrl)
+        console.log('🌍 Environment:', process.env.NODE_ENV)
+        
         if (token) {
           // Try with authentication first
-          response = await fetch(`http://localhost:3001/api/boards?organizationId=spektif-agency`, {
+          response = await fetch(`${apiUrl}/boards?organizationId=spektif-agency`, {
             headers: {
               'Authorization': `Bearer ${token}`,
               'Content-Type': 'application/json',
@@ -366,7 +370,8 @@ function TemplatesView({ session }: { session: any }) {
           })
         } else {
           // Fallback: Try to login with demo credentials and get token
-          const loginResponse = await fetch(`http://localhost:3001/api/auth/login`, {
+          const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api'
+          const loginResponse = await fetch(`${apiUrl}/auth/login`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -379,7 +384,7 @@ function TemplatesView({ session }: { session: any }) {
           
           if (loginResponse.ok) {
             const loginData = await loginResponse.json()
-            response = await fetch(`http://localhost:3001/api/boards?organizationId=spektif-agency`, {
+            response = await fetch(`${apiUrl}/boards?organizationId=spektif-agency`, {
               headers: {
                 'Authorization': `Bearer ${loginData.token}`,
                 'Content-Type': 'application/json',

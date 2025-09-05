@@ -8,6 +8,7 @@ import { ThemeProvider } from '@/components/providers/theme-provider'
 import { NextAuthProvider } from '@/components/providers/session-provider'
 import { locales } from '@/i18n'
 import { Toaster } from 'sonner'
+import { DebugInfo } from '@/components/debug-info'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -49,6 +50,7 @@ export default async function LocaleLayout({
               <div className="min-h-screen bg-background text-foreground">
                 {children}
                 <Toaster richColors />
+                <DebugInfo />
               </div>
             </NextIntlClientProvider>
           </NextAuthProvider>
