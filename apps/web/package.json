@@ -52,16 +52,17 @@
     "zod": "^4.1.0"
   },
   "devDependencies": {
+    "@spektif/eslint-config": "*",
+    "@spektif/typescript-config": "*",
     "@types/node": "^20.0.0",
     "@types/react": "^18.2.0",
+    "@types/react-big-calendar": "^1.16.2",
     "@types/react-dom": "^18.2.0",
-    "typescript": "^5.0.0",
-    "tailwindcss": "^3.3.0",
     "autoprefixer": "^10.4.0",
-    "postcss": "^8.4.0",
     "eslint": "^8.0.0",
     "eslint-config-next": "^14.0.0",
-    "@spektif/eslint-config": "*",
-    "@spektif/typescript-config": "*"
+    "postcss": "^8.4.0",
+    "tailwindcss": "^3.3.0",
+    "typescript": "^5.0.0"
   }
 }
