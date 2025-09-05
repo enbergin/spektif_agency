@@ -77,7 +77,7 @@ export class CardsService {
           },
         },
       },
-      orderBy: { order: 'asc' },
+      orderBy: { position: 'asc' },
     });
   }
 
@@ -210,10 +210,10 @@ export class CardsService {
     // Get next order
     const lastCard = await this.prisma.card.findFirst({
       where: { listId: dto.listId },
-      orderBy: { order: 'desc' },
+      orderBy: { position: 'desc' },
     });
 
-    const nextOrder = lastCard ? lastCard.order + 1 : 1;
+    const nextOrder = lastCard ? lastCard.position + 1 : 1;
 
     // Create card
     const card = await this.prisma.card.create({
@@ -222,7 +222,7 @@ export class CardsService {
         title: dto.title,
         description: dto.description,
         dueDate: dto.dueDate ? new Date(dto.dueDate) : null,
-        order: nextOrder,
+        position: nextOrder,
         createdBy: userId,
         members: dto.memberIds ? {
           create: dto.memberIds.map(memberId => ({
@@ -387,10 +387,10 @@ export class CardsService {
         await prisma.card.updateMany({
           where: {
             listId: dto.targetListId,
-            order: { gte: dto.newOrder },
+            position: { gte: dto.newOrder },
           },
           data: {
-            order: { increment: 1 },
+            position: { increment: 1 },
           },
         });
 
@@ -398,23 +398,23 @@ export class CardsService {
         await prisma.card.updateMany({
           where: {
             listId: card.listId,
-            order: { gt: card.order },
+            position: { gt: card.position },
           },
           data: {
-            order: { decrement: 1 },
+            position: { decrement: 1 },
           },
         });
       } else {
         // Moving within same list
-        if (dto.newOrder > card.order) {
+        if (dto.newOrder > card.position) {
           // Moving down
           await prisma.card.updateMany({
             where: {
               listId: card.listId,
-              order: { gt: card.order, lte: dto.newOrder },
+              position: { gt: card.position, lte: dto.newOrder },
             },
             data: {
-              order: { decrement: 1 },
+              position: { decrement: 1 },
             },
           });
         } else {
@@ -422,10 +422,10 @@ export class CardsService {
           await prisma.card.updateMany({
             where: {
               listId: card.listId,
-              order: { gte: dto.newOrder, lt: card.order },
+              position: { gte: dto.newOrder, lt: card.position },
             },
             data: {
-              order: { increment: 1 },
+              position: { increment: 1 },
             },
           });
         }
@@ -436,7 +436,7 @@ export class CardsService {
         where: { id },
         data: {
           listId: dto.targetListId,
-          order: dto.newOrder,
+          position: dto.newOrder,
         },
         include: {
           list: {

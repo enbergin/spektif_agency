@@ -9,10 +9,10 @@ export class ListsService {
   async findByBoard(boardId: string) {
     return this.prisma.list.findMany({
       where: { boardId },
-      orderBy: { order: 'asc' },
+      orderBy: { position: 'asc' },
       include: {
         cards: {
-          orderBy: { order: 'asc' },
+          orderBy: { position: 'asc' },
         },
       },
     });
