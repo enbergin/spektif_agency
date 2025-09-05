@@ -71,15 +71,15 @@ model Organization {
 }
 
 model OrgMember {
-  id     String @id @default(cuid())
-  userId String
-  orgId  String
-  role   String @default("USER")
+  id             String @id @default(cuid())
+  userId         String
+  organizationId String
+  role           String @default("USER")
 
   user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
-  organization Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
 
-  @@unique([userId, orgId])
+  @@unique([userId, organizationId])
   @@map("org_members")
 }
 
