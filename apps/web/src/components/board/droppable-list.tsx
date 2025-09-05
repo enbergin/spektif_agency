@@ -9,6 +9,9 @@ import { Badge } from '@/components/ui/badge'
 import { Plus, MoreHorizontal } from 'lucide-react'
 import { DraggableCard, CardData } from './draggable-card'
 
+// Re-export CardData for other components
+export type { CardData }
+
 export interface ListData {
   id: string
   title: string
