@@ -67,13 +67,13 @@ export default function BoardPage() {
   // Convert board data to ListData format for drag-drop component
   const lists: ListData[] = board?.lists?.map(list => ({
     id: list.id,
-    title: list.title || list.name,
+    title: list.title,
     cards: list.cards?.map(card => ({
       id: card.id,
       title: card.title,
       description: card.description || '',
-      labels: card.labels || [],
-      members: card.members || []
+      labels: (card as any).labels || [],
+      members: card.members?.map(member => member.user?.name || member.user?.email || 'Unknown') || []
     })) || []
   })) || []
 
@@ -217,7 +217,7 @@ export default function BoardPage() {
             </Link>
 
             <div className="flex items-center space-x-3">
-              <h1 className="text-lg font-semibold text-white">{board.name || board.title || 'Board'}</h1>
+              <h1 className="text-lg font-semibold text-white">{board.title || 'Board'}</h1>
               <Button variant="ghost" size="sm" className="text-white/80 hover:bg-white/10 w-8 h-8 p-0">
                 <Star className="w-4 h-4" />
               </Button>

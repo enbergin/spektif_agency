@@ -152,7 +152,7 @@ export function useBoard(boardId: string) {
     try {
       await apiClient.moveCard(cardId, {
         listId: targetListId,
-        order: newOrder
+        position: newOrder
       })
       
       // Optimistically update the UI
@@ -165,7 +165,7 @@ export function useBoard(boardId: string) {
           ...list,
           cards: list.cards.filter(card => {
             if (card.id === cardId) {
-              cardToMove = { ...card, listId: targetListId, order: newOrder }
+              cardToMove = { ...card, listId: targetListId, position: newOrder }
               return false
             }
             return true
@@ -180,7 +180,7 @@ export function useBoard(boardId: string) {
             targetList.cards.splice(newOrder, 0, cardToMove)
             // Reorder cards in the target list
             targetList.cards.forEach((card, index) => {
-              card.order = index
+              card.position = index
             })
           }
         }
