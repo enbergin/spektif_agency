@@ -10,7 +10,10 @@ async function bootstrap() {
         'http://localhost:3000', 
         'http://0.0.0.0:3000',
         'http://localhost:8080',
-        'http://0.0.0.0:8080'
+        'http://0.0.0.0:8080',
+        'https://spektif-agency-final-app.vercel.app',
+        'https://spektif-agency-final-app-*.vercel.app', // For preview deployments
+        /\.vercel\.app$/ // Allow all vercel domains for your project
       ],
       credentials: true,
     },
@@ -38,8 +41,9 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('docs', app, document);
 
-  await app.listen(3001, '0.0.0.0');
-  console.log('🚀 Spektif Agency API is running on http://localhost:3001');
-  console.log('📚 API Documentation: http://localhost:3001/docs');
+  const port = process.env.PORT || 3001;
+  await app.listen(port, '0.0.0.0');
+  console.log(`🚀 Spektif Agency API is running on port ${port}`);
+  console.log(`📚 API Documentation: http://localhost:${port}/docs`);
 }
 bootstrap();
