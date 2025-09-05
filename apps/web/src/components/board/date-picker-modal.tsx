@@ -177,7 +177,7 @@ export function DatePickerModal({ isOpen, onClose, onSave, currentDate }: DatePi
             <div className="flex items-center space-x-2 mb-2">
               <Checkbox
                 checked={hasStartDate}
-                onCheckedChange={setHasStartDate}
+                onCheckedChange={(checked) => setHasStartDate(checked === true)}
                 className="border-gray-600"
               />
               <label className="text-sm">Start date</label>
