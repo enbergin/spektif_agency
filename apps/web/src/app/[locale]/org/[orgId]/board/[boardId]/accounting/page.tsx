@@ -212,7 +212,8 @@ export default function BoardAccountingPage() {
     const saved = localStorage.getItem('boardBackgrounds')
     if (saved) {
       const backgrounds = JSON.parse(saved) as Record<string, string>
-      setBoardBackground(backgrounds[boardId] || '')
+      const boardIdStr = Array.isArray(boardId) ? boardId[0] : boardId
+      setBoardBackground(backgrounds[boardIdStr] || '')
     }
   }, [boardId])
 
