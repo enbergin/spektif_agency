@@ -1,34 +1,11 @@
 {
-  "version": 2,
-  "builds": [
-    {
-      "src": "apps/web/package.json",
-      "use": "@vercel/next",
-      "config": {
-        "distDir": ".next"
-      }
-    }
-  ],
-  "routes": [
-    {
-      "src": "/(.*)",
-      "dest": "apps/web/$1"
-    }
-  ],
-  "framework": "nextjs",
   "buildCommand": "cd apps/web && npm run build",
-  "devCommand": "cd apps/web && npm run dev",
-  "installCommand": "bun install",
   "outputDirectory": "apps/web/.next",
+  "installCommand": "bun install",
+  "framework": "nextjs",
   "functions": {
     "apps/web/src/app/api/auth/[...nextauth]/route.ts": {
       "maxDuration": 30
     }
-  },
-  "rewrites": [
-    {
-      "source": "/api/(.*)",
-      "destination": "/api/$1"
-    }
-  ]
+  }
 }
