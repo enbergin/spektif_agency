@@ -35,6 +35,48 @@ Organization: spektif-agency
 
 ---
 
+## 🚨 **RECENT CRITICAL FIXES (December 2024)**
+
+### **⚠️ MAJOR DEPLOYMENT ISSUES RESOLVED**
+
+#### **1. Field Mapping Mismatches - CRITICAL**
+**Problem**: Frontend/backend field name inconsistency causing API failures
+- **Issue**: Frontend used `order`, database used `position`
+- **Impact**: All drag & drop operations failed silently
+- **Solution**: Standardized all field names to `position`
+
+#### **2. Broken Card Reordering - CRITICAL**  
+**Problem**: Card drag & drop wasn't persisting to database
+- **Issue**: Backend service had commented out position update logic
+- **Impact**: Users could drag but changes weren't saved
+- **Solution**: Uncommented and fixed position update queries
+
+#### **3. TypeScript Build Errors - DEPLOYMENT BLOCKING**
+**Problem**: Vercel deployment failing due to type mismatches
+- **Issue**: `CardMember[]` vs `string[]` type conflicts
+- **Impact**: Frontend couldn't deploy to production
+- **Solution**: Fixed type mappings and removed non-existent properties
+
+### **🔧 FILES MODIFIED IN FIXES**
+
+**Frontend Changes**:
+- `apps/web/src/hooks/use-boards.ts` - Interface definitions
+- `apps/web/src/hooks/use-board.ts` - Hook implementations
+- `apps/web/src/lib/api.ts` - API client calls
+- `apps/web/src/app/[locale]/org/[orgId]/board/[boardId]/page.tsx` - Type mappings
+
+**Backend Changes**:
+- `apps/api/src/boards/dto/boards.dto.ts` - DTO field names
+- `apps/api/src/cards/cards.service.ts` - Card reordering logic
+
+### **✅ CURRENT STATUS**
+- ✅ **Vercel**: Deploying with fixed TypeScript errors
+- ✅ **Render**: Running with corrected field mappings  
+- ✅ **Railway**: Database schema compatible
+- ✅ **All functionality**: Card/list editing and drag & drop working
+
+---
+
 ## 🏗️ **DEPLOYMENT ARCHITECTURE**
 
 ```
@@ -143,6 +185,14 @@ NEXTAUTH_SECRET=spektif-nextauth-secret-key-2024
 ---
 
 ## 📊 **COMPLETE API STRUCTURE**
+
+### **⚠️ CRITICAL FIELD MAPPING NOTES**
+**IMPORTANT**: All position-related fields use `position` NOT `order`
+- ✅ **Lists**: `position` field for ordering
+- ✅ **Cards**: `position` field for ordering  
+- ✅ **API DTOs**: All use `position` field
+- ✅ **Database**: PostgreSQL schema uses `position`
+- ❌ **NEVER USE**: `order` field (will cause API failures)
 
 ### **🔐 Authentication Endpoints**
 
