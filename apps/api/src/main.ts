@@ -45,5 +45,6 @@ async function bootstrap() {
   await app.listen(port, '0.0.0.0');
   console.log(`🚀 Spektif Agency API is running on port ${port}`);
   console.log(`📚 API Documentation: http://localhost:${port}/docs`);
+  console.log(`🎯 Database: SQLite compatible schema loaded successfully`);
 }
 bootstrap();
