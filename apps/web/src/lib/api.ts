@@ -8,7 +8,7 @@ class ApiClient {
     return {
       'Content-Type': 'application/json',
       ...((session?.user as any)?.backendToken && {
-        Authorization: `Bearer ${(session.user as any).backendToken}`
+        Authorization: `Bearer ${(session?.user as any)?.backendToken}`
       })
     }
   }
