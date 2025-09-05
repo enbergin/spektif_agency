@@ -138,8 +138,9 @@ export default function BoardCalendarPage() {
   useEffect(() => {
     const saved = localStorage.getItem('boardBackgrounds')
     if (saved) {
-      const backgrounds = JSON.parse(saved)
-      setBoardBackground(backgrounds[boardId] || '')
+      const backgrounds = JSON.parse(saved) as Record<string, string>
+      const boardIdStr = Array.isArray(boardId) ? boardId[0] : boardId
+      setBoardBackground(backgrounds[boardIdStr] || '')
     }
   }, [boardId])
 
