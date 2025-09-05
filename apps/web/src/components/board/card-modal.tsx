@@ -57,6 +57,8 @@ interface Comment {
 }
 
 export function CardModal({ card, isOpen, onClose, onUpdate }: CardModalProps) {
+  const [title, setTitle] = useState(card?.title || '')
+  const [isEditingTitle, setIsEditingTitle] = useState(false)
   const [description, setDescription] = useState(card?.description || '')
   const [isEditingDescription, setIsEditingDescription] = useState(false)
   const [newComment, setNewComment] = useState('')
@@ -141,7 +143,47 @@ export function CardModal({ card, isOpen, onClose, onUpdate }: CardModalProps) {
               <div className="flex items-start space-x-3">
                 <CheckSquare className="w-5 h-5 mt-1 text-gray-600" />
                 <div className="flex-1">
-                  <h2 className="text-xl font-semibold text-gray-900 mb-2">{card.title}</h2>
+                  {isEditingTitle ? (
+                    <div className="space-y-2">
+                      <Input
+                        value={title}
+                        onChange={(e) => setTitle(e.target.value)}
+                        className="text-xl font-semibold"
+                        placeholder="Card title..."
+                        autoFocus
+                      />
+                      <div className="flex space-x-2">
+                        <Button 
+                          size="sm" 
+                          onClick={() => {
+                            setIsEditingTitle(false)
+                            onUpdate?.({ ...card, title })
+                          }}
+                        >
+                          Save
+                        </Button>
+                        <Button 
+                          variant="ghost" 
+                          size="sm" 
+                          onClick={() => {
+                            setTitle(card.title)
+                            setIsEditingTitle(false)
+                          }}
+                        >
+                          Cancel
+                        </Button>
+                      </div>
+                    </div>
+                  ) : (
+                    <div 
+                      className="cursor-pointer group"
+                      onClick={() => setIsEditingTitle(true)}
+                    >
+                      <h2 className="text-xl font-semibold text-gray-900 mb-2 group-hover:bg-gray-50 p-2 rounded">
+                        {title}
+                      </h2>
+                    </div>
+                  )}
                   <p className="text-sm text-gray-600">
                     in list <span className="font-medium">Project Brief</span>
                   </p>

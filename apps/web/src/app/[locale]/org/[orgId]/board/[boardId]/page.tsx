@@ -25,144 +25,8 @@ import { CardModal } from '@/components/board/card-modal'
 import { ThemeSwitcher } from '@/components/theme-switcher'
 import { LanguageSwitcher } from '@/components/language-switcher'
 
-// Mock data for the board
-const mockBoard = {
-  id: 'board-1',
-  title: 'Design Project Template',
-  description: 'Product design workflow with team collaboration',
-  color: '#4ADE80',
-  backgroundImage: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1920&h=1080&fit=crop&crop=center'
-}
-
-const initialLists: ListData[] = [
-  {
-    id: 'list-1',
-    title: 'Project Brief',
-    cards: [
-      {
-        id: 'card-1',
-        title: 'Manager Reaches Out',
-        description: 'The new employee\'s manager should reach out prior to their start date.',
-        dueDate: '2024-04-23',
-        labels: ['Priority', 'Design'],
-        members: ['A', 'E'],
-        attachments: 2,
-        comments: 3
-      },
-      {
-        id: 'card-2',
-        title: 'Project Documents',
-        description: 'Gather all necessary project documentation and requirements.',
-        labels: ['Documentation'],
-        members: ['M'],
-        attachments: 5
-      }
-    ]
-  },
-  {
-    id: 'list-2',
-    title: 'Brand Identity',
-    cards: [
-      {
-        id: 'card-3',
-        title: 'Strategy Document',
-        description: 'Create comprehensive brand strategy and positioning.',
-        dueDate: '2024-04-25',
-        labels: ['Strategy', 'Brand'],
-        members: ['A', 'E', 'M'],
-        comments: 7
-      },
-      {
-        id: 'card-4',
-        title: 'Design Deliverables',
-        description: 'Logo, color palette, typography, and visual guidelines.',
-        labels: ['Design', 'Visual'],
-        members: ['E'],
-        attachments: 12,
-        comments: 4
-      }
-    ]
-  },
-  {
-    id: 'list-3',
-    title: 'Product Design',
-    cards: [
-      {
-        id: 'card-5',
-        title: 'User Research',
-        description: 'Conduct user interviews and usability testing.',
-        dueDate: '2024-04-20',
-        labels: ['Research', 'UX'],
-        members: ['A'],
-        attachments: 3,
-        comments: 2
-      },
-      {
-        id: 'card-6',
-        title: 'Wireframes',
-        description: 'Low-fidelity wireframes for main user flows.',
-        labels: ['Wireframes', 'UX'],
-        members: ['E', 'M'],
-        attachments: 8
-      },
-      {
-        id: 'card-7',
-        title: 'Visual Design',
-        description: 'High-fidelity mockups and design system.',
-        labels: ['Visual', 'UI'],
-        members: ['E'],
-        attachments: 15,
-        comments: 6
-      }
-    ]
-  },
-  {
-    id: 'list-4',
-    title: 'Marketing Website',
-    cards: [
-      {
-        id: 'card-8',
-        title: 'Sitemap',
-        description: 'Information architecture and site structure.',
-        labels: ['IA', 'Planning'],
-        members: ['M'],
-        comments: 1
-      },
-      {
-        id: 'card-9',
-        title: 'Wireframes',
-        description: 'Website wireframes and user journey mapping.',
-        labels: ['Wireframes', 'Web'],
-        members: ['A', 'E'],
-        attachments: 6,
-        comments: 3
-      }
-    ]
-  },
-  {
-    id: 'list-5',
-    title: 'Client Reviews',
-    cards: [
-      {
-        id: 'card-10',
-        title: 'Mobile App Reviews',
-        description: 'Client feedback on mobile application designs.',
-        labels: ['Review', 'Mobile'],
-        members: ['A'],
-        comments: 8
-      },
-      {
-        id: 'card-11',
-        title: 'Marketing Website Reviews',
-        description: 'Stakeholder reviews and approval process.',
-        labels: ['Review', 'Web'],
-        members: ['E', 'M'],
-        attachments: 3,
-        comments: 5
-      }
-    ]
-  }
-]
+// Default background for boards
+const defaultBackgroundImage = 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1920&h=1080&fit=crop&crop=center'
 
 export default function BoardPage() {
   const params = useParams()
@@ -241,6 +105,29 @@ export default function BoardPage() {
     setSelectedCard(null)
   }
 
+  const handleCardUpdate = async (updatedCard: CardData) => {
+    try {
+      await updateCard(updatedCard.id, {
+        title: updatedCard.title,
+        description: updatedCard.description
+      })
+      toast.success('Card updated successfully!')
+    } catch (error) {
+      console.error('Failed to update card:', error)
+      toast.error('Failed to update card')
+    }
+  }
+
+  const handleListUpdate = async (listId: string, title: string) => {
+    try {
+      await updateList(listId, { title })
+      toast.success('List updated successfully!')
+    } catch (error) {
+      console.error('Failed to update list:', error)
+      toast.error('Failed to update list')
+    }
+  }
+
   const handleAddList = async () => {
     try {
       await createList('New List')
@@ -302,7 +189,7 @@ export default function BoardPage() {
   }
 
   // Get the background image (custom or default)
-  const backgroundImage = boardBackground || mockBoard.backgroundImage
+  const backgroundImage = boardBackground || defaultBackgroundImage
 
   return (
     <div 
@@ -381,6 +268,7 @@ export default function BoardPage() {
             onCardClick={handleCardClick}
             onAddList={handleAddList}
             onAddCard={handleAddCard}
+            onUpdateList={handleListUpdate}
           />
         </div>
       </main>
@@ -390,6 +278,7 @@ export default function BoardPage() {
         card={selectedCard}
         isOpen={isCardModalOpen}
         onClose={handleCardModalClose}
+        onUpdate={handleCardUpdate}
       />
     </div>
   )

@@ -1,12 +1,13 @@
 'use client'
 
-import React from 'react'
+import React, { useState } from 'react'
 import { useDroppable } from '@dnd-kit/core'
 import { SortableContext, verticalListSortingStrategy, useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
-import { Plus, MoreHorizontal } from 'lucide-react'
+import { Plus, MoreHorizontal, Check, X } from 'lucide-react'
 import { DraggableCard, CardData } from './draggable-card'
 
 // Re-export CardData for other components
@@ -22,9 +23,13 @@ interface DroppableListProps {
   list: ListData
   onAddCard?: () => void
   onCardClick?: (card: CardData) => void
+  onUpdateList?: (listId: string, title: string) => void
 }
 
-export function DroppableList({ list, onAddCard, onCardClick }: DroppableListProps) {
+export function DroppableList({ list, onAddCard, onCardClick, onUpdateList }: DroppableListProps) {
+  const [isEditingTitle, setIsEditingTitle] = useState(false)
+  const [title, setTitle] = useState(list.title)
+  
   const { setNodeRef, isOver } = useDroppable({
     id: list.id,
   })
@@ -80,9 +85,56 @@ export function DroppableList({ list, onAddCard, onCardClick }: DroppableListPro
           {...attributes}
           {...listeners}
         >
-          <h3 className="font-semibold text-sm text-gray-800 dark:text-gray-200 flex-1 select-none">
-            {list.title}
-          </h3>
+          {isEditingTitle ? (
+            <div className="flex-1 flex items-center space-x-2">
+              <Input
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                className="text-sm font-semibold h-6"
+                autoFocus
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    onUpdateList?.(list.id, title)
+                    setIsEditingTitle(false)
+                  } else if (e.key === 'Escape') {
+                    setTitle(list.title)
+                    setIsEditingTitle(false)
+                  }
+                }}
+              />
+              <Button 
+                size="sm" 
+                className="h-6 w-6 p-0"
+                onClick={() => {
+                  onUpdateList?.(list.id, title)
+                  setIsEditingTitle(false)
+                }}
+              >
+                <Check className="w-3 h-3" />
+              </Button>
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                className="h-6 w-6 p-0"
+                onClick={() => {
+                  setTitle(list.title)
+                  setIsEditingTitle(false)
+                }}
+              >
+                <X className="w-3 h-3" />
+              </Button>
+            </div>
+          ) : (
+            <h3 
+              className="font-semibold text-sm text-gray-800 dark:text-gray-200 flex-1 select-none hover:bg-gray-100 dark:hover:bg-gray-700 p-1 rounded cursor-pointer"
+              onClick={(e) => {
+                e.stopPropagation()
+                setIsEditingTitle(true)
+              }}
+            >
+              {title}
+            </h3>
+          )}
           <Button variant="ghost" size="sm" className="h-6 w-6 p-0 hover:bg-gray-100 dark:hover:bg-gray-700">
             <MoreHorizontal className="w-4 h-4 text-gray-600 dark:text-gray-400" />
           </Button>

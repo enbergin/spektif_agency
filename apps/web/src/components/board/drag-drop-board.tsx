@@ -28,6 +28,7 @@ interface DragDropBoardProps {
   onCardClick?: (card: CardData) => void
   onAddList?: () => void
   onAddCard?: (listId: string) => void
+  onUpdateList?: (listId: string, title: string) => void
 }
 
 export function DragDropBoard({
@@ -35,7 +36,8 @@ export function DragDropBoard({
   onListsChange,
   onCardClick,
   onAddList,
-  onAddCard
+  onAddCard,
+  onUpdateList
 }: DragDropBoardProps) {
   const [activeCard, setActiveCard] = useState<CardData | null>(null)
   const [activeList, setActiveList] = useState<ListData | null>(null)
@@ -191,6 +193,7 @@ export function DragDropBoard({
               list={list}
               onCardClick={onCardClick}
               onAddCard={() => onAddCard?.(list.id)}
+              onUpdateList={onUpdateList}
             />
           ))}
         </SortableContext>
