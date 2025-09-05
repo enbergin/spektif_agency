@@ -399,10 +399,10 @@ export class CardsService {
         await prisma.card.updateMany({
           where: {
             listId: card.listId,
-            // position: // Use order instead { gt: card.order },
+            position: { gt: card.position },
           },
           data: {
-            // position: // Use order instead { decrement: 1 },
+            position: { decrement: 1 },
           },
         });
       } else {
@@ -412,10 +412,10 @@ export class CardsService {
           await prisma.card.updateMany({
             where: {
               listId: card.listId,
-              // position: // Use order instead { gt: card.order, lte: dto.newOrder },
+              position: { gt: card.position, lte: dto.newOrder },
             },
             data: {
-              // position: // Use order instead { decrement: 1 },
+              position: { decrement: 1 },
             },
           });
         } else {
@@ -423,10 +423,10 @@ export class CardsService {
           await prisma.card.updateMany({
             where: {
               listId: card.listId,
-              // position: // Use order instead { gte: dto.newOrder, lt: card.order },
+              position: { gte: dto.newOrder, lt: card.position },
             },
             data: {
-              // position: // Use order instead { increment: 1 },
+              position: { increment: 1 },
             },
           });
         }

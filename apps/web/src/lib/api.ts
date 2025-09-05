@@ -95,7 +95,7 @@ class ApiClient {
 
   async updateList(listId: string, data: Partial<{
     title: string
-    order: number
+    position: number
   }>) {
     return this.request(`/boards/lists/${listId}`, {
       method: 'PATCH',
@@ -147,7 +147,7 @@ class ApiClient {
     description: string
     dueDate: string
     listId: string
-    order: number
+    position: number
   }>) {
     return this.request(`/cards/${cardId}`, {
       method: 'PATCH',
@@ -163,7 +163,7 @@ class ApiClient {
 
   async moveCard(cardId: string, data: {
     listId: string
-    order: number
+    position: number
   }) {
     return this.request(`/cards/${cardId}/move`, {
       method: 'POST',

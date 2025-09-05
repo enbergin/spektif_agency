@@ -21,7 +21,7 @@ export interface List {
   id: string
   boardId: string
   title: string
-  order: number
+  position: number
   cards: Card[]
 }
 
@@ -31,7 +31,7 @@ export interface Card {
   title: string
   description?: string
   dueDate?: string
-  order: number
+  position: number
   archived: boolean
   createdBy: string
   members: CardMember[]

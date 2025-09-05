@@ -52,7 +52,7 @@ export function useBoard(boardId: string) {
     }
   }
 
-  const updateList = async (listId: string, data: Partial<{ title: string; order: number }>) => {
+  const updateList = async (listId: string, data: Partial<{ title: string; position: number }>) => {
     if (!board) return
 
     try {
@@ -119,7 +119,7 @@ export function useBoard(boardId: string) {
     description: string
     dueDate: string
     listId: string
-    order: number
+    position: number
   }>) => {
     if (!board) return
 

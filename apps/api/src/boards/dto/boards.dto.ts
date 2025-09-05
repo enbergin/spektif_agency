@@ -61,7 +61,7 @@ export class UpdateListDto {
   @ApiProperty({ required: false, example: 2 })
   @IsOptional()
   @IsNumber()
-  order?: number;
+  position?: number;
 }
 
 export class ReorderListsDto {
