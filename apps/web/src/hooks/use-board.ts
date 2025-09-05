@@ -43,7 +43,7 @@ export function useBoard(boardId: string) {
       
       setBoard(prev => prev ? {
         ...prev,
-        lists: [...prev.lists, { ...newList, cards: [] }]
+        lists: [...(prev.lists || []), { ...newList, cards: [] }]
       } : null)
       
       return newList
