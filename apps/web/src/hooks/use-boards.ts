@@ -104,7 +104,7 @@ export function useBoards(organizationId: string) {
 
     try {
       setLoading(true)
-      const data = await apiClient.getBoards(organizationId)
+      const data = await apiClient.getBoards(organizationId) as Board[]
       setBoards(data)
       setError(null)
     } catch (err) {
