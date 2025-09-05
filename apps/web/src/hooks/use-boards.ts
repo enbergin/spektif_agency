@@ -141,9 +141,9 @@ export function useBoards(organizationId: string) {
     color: string
   }>) => {
     try {
-      const updatedBoard = await apiClient.updateBoard(boardId, data)
+      const updatedBoard = await apiClient.updateBoard(boardId, data) as any
       setBoards(prev => prev.map(board => 
-        board.id === boardId ? { ...board, ...updatedBoard } : board
+        board.id === boardId ? { ...board, ...(updatedBoard || {}) } : board
       ))
       return updatedBoard
     } catch (err) {
