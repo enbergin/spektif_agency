@@ -56,12 +56,12 @@ export function useBoard(boardId: string) {
     if (!board) return
 
     try {
-      const updatedList = await apiClient.updateList(listId, data)
+      const updatedList = await apiClient.updateList(listId, data) as any
       
       setBoard(prev => prev ? {
         ...prev,
         lists: prev.lists.map(list => 
-          list.id === listId ? { ...list, ...updatedList } : list
+          list.id === listId ? { ...list, ...(updatedList || {}) } : list
         )
       } : null)
       
@@ -97,13 +97,13 @@ export function useBoard(boardId: string) {
       const newCard = await apiClient.createCard({
         listId,
         ...data
-      })
+      }) as any
       
       setBoard(prev => prev ? {
         ...prev,
         lists: prev.lists.map(list => 
           list.id === listId 
-            ? { ...list, cards: [...list.cards, newCard] }
+            ? { ...list, cards: [...list.cards, newCard || {}] }
             : list
         )
       } : null)
@@ -124,7 +124,7 @@ export function useBoard(boardId: string) {
     if (!board) return
 
     try {
-      const updatedCard = await apiClient.updateCard(cardId, data)
+      const updatedCard = await apiClient.updateCard(cardId, data) as any
       
       setBoard(prev => {
         if (!prev) return null
@@ -134,7 +134,7 @@ export function useBoard(boardId: string) {
           lists: prev.lists.map(list => ({
             ...list,
             cards: list.cards.map(card => 
-              card.id === cardId ? { ...card, ...updatedCard } : card
+              card.id === cardId ? { ...card, ...(updatedCard || {}) } : card
             )
           }))
         }
