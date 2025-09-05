@@ -57,4 +57,3 @@ export default async function LocaleLayout({
     </html>
   )
 }
-<- Cross-browser compatibility Updated Fri Sep  5 04:26:01 AM CEST 2025 -->
