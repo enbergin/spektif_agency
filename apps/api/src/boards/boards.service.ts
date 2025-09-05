@@ -58,7 +58,7 @@ export class BoardsService {
                       },
                     },
                   },
-                  attachments: true,
+                  // attachments: true, // Field doesn't exist in current schema
                   comments: {
                     include: {
                       author: {
@@ -132,7 +132,7 @@ export class BoardsService {
                     },
                   },
                 },
-                attachments: true,
+                // attachments: true, // Field doesn't exist in current schema
                 _count: {
                   select: {
                     comments: true,
@@ -192,7 +192,7 @@ export class BoardsService {
                     },
                   },
                 },
-                attachments: true,
+                // attachments: true, // Field doesn't exist in current schema
                 comments: {
                   include: {
                     author: {
@@ -230,7 +230,7 @@ export class BoardsService {
     }
 
     // Check access permissions
-    const orgMember = board.organization?.members?.find(member => member.userId === userId);
+    const orgMember = (board as any).organization?.members?.find((member: any) => member.userId === userId);
     if (!orgMember) {
       throw new ForbiddenException('Not a member of this organization');
     }
@@ -250,11 +250,11 @@ export class BoardsService {
     }
 
     // Filter cards for CLIENT users
-    if (orgMember.role === 'CLIENT' && board.lists) {
-      board.lists = board.lists.map(list => ({
+    if (orgMember.role === 'CLIENT' && (board as any).lists) {
+      (board as any).lists = (board as any).lists.map((list: any) => ({
         ...list,
-        cards: list.cards?.filter(card =>
-          card.members?.some(member => member.userId === userId)
+        cards: list.cards?.filter((card: any) =>
+          card.members?.some((member: any) => member.userId === userId)
         ) || [],
       }));
     }
@@ -279,10 +279,15 @@ export class BoardsService {
 
     const board = await this.prisma.board.create({
       data: {
-        organizationId: dto.organizationId,
         title: dto.title,
         description: dto.description,
         // color: dto.color, // Field doesn't exist in current schema
+        organization: {
+          connect: { id: dto.organizationId }
+        },
+        creator: {
+          connect: { id: userId }
+        },
         members: {
           create: {
             userId,
@@ -470,10 +475,10 @@ export class BoardsService {
 
     // Update list orders in transaction
     await this.prisma.$transaction(
-      listOrders.map(({ id, order }) =>
+      listOrders.map(({ id, position }) =>
         this.prisma.list.update({
           where: { id },
-          data: { order },
+          data: { position },
         })
       )
     );
