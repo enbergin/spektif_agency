@@ -14,12 +14,7 @@ async function main() {
       id: 'spektif-agency',
       name: 'Spektif Agency',
       slug: 'spektif-agency',
-      branding: JSON.stringify({
-        primaryColor: '#4ADE80',
-        secondaryColor: '#000000',
-        logo: '/spektif-logo.png',
-      }),
-      subscriptionStatus: 'ACTIVE',
+      description: 'Digital agency providing modern web solutions',
     },
   });
 
@@ -57,7 +52,7 @@ async function main() {
     data: {
       title: 'Spektif Projects',
       description: 'Main project management board',
-      orgId: organization.id,
+      organizationId: organization.id,
       createdBy: admin.id,
     },
   });
