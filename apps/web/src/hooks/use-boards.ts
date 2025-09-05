@@ -127,7 +127,7 @@ export function useBoards(organizationId: string) {
       const newBoard = await apiClient.createBoard({
         ...data,
         organizationId
-      })
+      }) as Board
       setBoards(prev => [...prev, newBoard])
       return newBoard
     } catch (err) {
