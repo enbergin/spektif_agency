@@ -10,7 +10,7 @@ export class ChatService {
     // Check if user has access to the organization
     const orgMember = await this.prisma.orgMember.findUnique({
       where: {
-        organizationId_userId: {
+        userId_organizationId: {
           organizationId: dto.organizationId,
           userId,
         },
@@ -41,7 +41,7 @@ export class ChatService {
                   id: true,
                   name: true,
                   email: true,
-                  image: true,
+                  avatar: true,
                 },
               },
             },
@@ -59,8 +59,8 @@ export class ChatService {
       data: {
         organizationId: dto.organizationId,
         type: dto.type,
-        title: dto.title,
-        cardId: dto.cardId,
+        name: dto.title,
+        // cardId: dto.cardId, // Field doesn't exist in current schema
         participants: {
           create: [
             { userId, role: 'admin' },
@@ -79,7 +79,7 @@ export class ChatService {
                 id: true,
                 name: true,
                 email: true,
-                image: true,
+                avatar: true,
               },
             },
           },
@@ -94,7 +94,7 @@ export class ChatService {
     // Check if user is member of organization
     const orgMember = await this.prisma.orgMember.findUnique({
       where: {
-        organizationId_userId: {
+        userId_organizationId: {
           organizationId,
           userId,
         },
@@ -122,7 +122,7 @@ export class ChatService {
                 id: true,
                 name: true,
                 email: true,
-                image: true,
+                avatar: true,
               },
             },
           },
@@ -133,7 +133,7 @@ export class ChatService {
           },
           take: 1,
           include: {
-            author: {
+            sender: {
               select: {
                 id: true,
                 name: true,
@@ -157,7 +157,7 @@ export class ChatService {
     // Check if user is participant
     const participant = await this.prisma.participant.findUnique({
       where: {
-        conversationId_userId: {
+        userId_conversationId: {
           conversationId,
           userId,
         },
@@ -175,25 +175,26 @@ export class ChatService {
         conversationId,
       },
       include: {
-        author: {
+        sender: {
           select: {
             id: true,
             name: true,
             email: true,
-            image: true,
+            avatar: true,
           },
         },
-        replyTo: {
-          include: {
-            author: {
-              select: {
-                id: true,
-                name: true,
-              },
-            },
-          },
-        },
-        attachments: true,
+        // replyTo: // Field doesn't exist in current schema
+        // {
+        //   include: {
+        //     sender: {
+        //       select: {
+        //         id: true,
+        //         name: true,
+        //       },
+        //     },
+        //   },
+        // },
+        // attachments: true, // Field doesn't exist in current schema
       },
       orderBy: {
         createdAt: 'desc',
@@ -207,7 +208,7 @@ export class ChatService {
     // Check if user is participant
     const participant = await this.prisma.participant.findUnique({
       where: {
-        conversationId_userId: {
+        userId_conversationId: {
           conversationId: dto.conversationId,
           userId: dto.authorId,
         },
@@ -233,29 +234,30 @@ export class ChatService {
     const message = await this.prisma.message.create({
       data: {
         conversationId: dto.conversationId,
-        authorId: dto.authorId,
-        text: dto.text,
-        replyToId: dto.replyToId,
+        senderId: dto.authorId,
+        content: dto.text,
+        // replyToId: dto.replyToId, // Field doesn't exist in current schema
       },
       include: {
-        author: {
+        sender: {
           select: {
             id: true,
             name: true,
             email: true,
-            image: true,
+            avatar: true,
           },
         },
-        replyTo: {
-          include: {
-            author: {
-              select: {
-                id: true,
-                name: true,
-              },
-            },
-          },
-        },
+        // replyTo: // Field doesn't exist in current schema
+        // {
+        //   include: {
+        //     sender: {
+        //       select: {
+        //         id: true,
+        //         name: true,
+        //       },
+        //     },
+        //   },
+        // },
       },
     });
 
@@ -296,7 +298,7 @@ export class ChatService {
     // Check if requester is admin of the conversation
     const requesterParticipant = await this.prisma.participant.findUnique({
       where: {
-        conversationId_userId: {
+        userId_conversationId: {
           conversationId,
           userId: requesterId,
         },
@@ -310,7 +312,7 @@ export class ChatService {
     // Check if user is already a participant
     const existingParticipant = await this.prisma.participant.findUnique({
       where: {
-        conversationId_userId: {
+        userId_conversationId: {
           conversationId,
           userId,
         },
@@ -333,7 +335,7 @@ export class ChatService {
             id: true,
             name: true,
             email: true,
-            image: true,
+            avatar: true,
           },
         },
       },
@@ -344,7 +346,7 @@ export class ChatService {
     // Check if requester is admin or removing themselves
     const requesterParticipant = await this.prisma.participant.findUnique({
       where: {
-        conversationId_userId: {
+        userId_conversationId: {
           conversationId,
           userId: requesterId,
         },
@@ -357,7 +359,7 @@ export class ChatService {
 
     await this.prisma.participant.delete({
       where: {
-        conversationId_userId: {
+        userId_conversationId: {
           conversationId,
           userId,
         },

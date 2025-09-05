@@ -73,11 +73,11 @@ export class CardsService {
         _count: {
           select: {
             comments: true,
-            // attachments: true // Field doesn't exist in current schema,
+            // attachments: true // Field doesn't exist in current schema
           },
         },
       },
-      orderBy: { // position: // Use order instead 'asc' },
+      orderBy: { position: 'asc' },
     });
   }
 
@@ -133,22 +133,23 @@ export class CardsService {
         //     // avatar: true // Use name only for now,
         //   },
         // },
-        conversation: {
-          include: {
-            messages: {
-              take: 10,
-              orderBy: { createdAt: 'desc' },
-              include: {
-                author: {
-                  select: {
-                    id: true,
-                    name: true,
-                  },
-                },
-              },
-            },
-          },
-        },
+        // conversation: // Field doesn't exist in current schema
+        // {
+        //   include: {
+        //     messages: {
+        //       take: 10,
+        //       orderBy: { createdAt: 'desc' },
+        //       include: {
+        //         author: {
+        //           select: {
+        //             id: true,
+        //             name: true,
+        //           },
+        //         },
+        //       },
+        //     },
+        //   },
+        // },
       },
     });
 
@@ -210,10 +211,10 @@ export class CardsService {
     // Get next order
     const lastCard = await this.prisma.card.findFirst({
       where: { listId: dto.listId },
-      orderBy: { // position: // Use order instead 'desc' },
+      orderBy: { position: 'desc' },
     });
 
-    const nextOrder = lastCard ? lastCard.order + 1 : 1;
+    const nextOrder = lastCard ? lastCard.position + 1 : 1;
 
     // Create card
     const card = await this.prisma.card.create({
@@ -406,7 +407,7 @@ export class CardsService {
         });
       } else {
         // Moving within same list
-        if (dto.newOrder > card.order) {
+        if (dto.newOrder > card.position) {
           // Moving down
           await prisma.card.updateMany({
             where: {

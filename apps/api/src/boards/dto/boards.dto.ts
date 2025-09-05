@@ -65,7 +65,7 @@ export class UpdateListDto {
 }
 
 export class ReorderListsDto {
-  @ApiProperty({ type: [Object], example: [{ id: 'list-1', // position: // Use order instead 1 }, { id: 'list-2', // position: // Use order instead 2 }] })
+  @ApiProperty({ type: [Object], example: [{ id: 'list-1', position: 1 }, { id: 'list-2', position: 2 }] })
   @IsArray()
-  listOrders: { id: string; // position: // Use order instead number }[];
+  listOrders: { id: string; position: number }[];
 }
