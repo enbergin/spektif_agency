@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "build": "npx nest build",
+    "build": "npx prisma generate && npx tsc && npx prisma db push && npx ts-node prisma/seed.ts",
     "format": "prettier --write \"src/**/*.ts\"",
     "start": "npx nest start",
     "start:dev": "nest start --watch",
