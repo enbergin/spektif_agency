@@ -39,11 +39,11 @@ export function useBoard(boardId: string) {
       const newList = await apiClient.createList({
         boardId: board.id,
         title
-      })
+      }) as any
       
       setBoard(prev => prev ? {
         ...prev,
-        lists: [...(prev.lists || []), { ...newList, cards: [] }]
+        lists: [...(prev.lists || []), { ...(newList || {}), cards: [] }]
       } : null)
       
       return newList
