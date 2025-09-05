@@ -48,3 +48,4 @@ async function bootstrap() {
   console.log(`🎯 Database: SQLite compatible schema loaded successfully`);
 }
 bootstrap();
+// Force deployment Fri Sep  5 01:43:17 PM CEST 2025
