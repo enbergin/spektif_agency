@@ -211,7 +211,7 @@ export default function BoardAccountingPage() {
   useEffect(() => {
     const saved = localStorage.getItem('boardBackgrounds')
     if (saved) {
-      const backgrounds = JSON.parse(saved)
+      const backgrounds = JSON.parse(saved) as Record<string, string>
       setBoardBackground(backgrounds[boardId] || '')
     }
   }, [boardId])
