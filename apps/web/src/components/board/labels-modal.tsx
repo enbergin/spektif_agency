@@ -164,7 +164,7 @@ export function LabelsModal({ isOpen, onClose, currentLabels, onSave }: LabelsMo
             <div className="flex items-center space-x-2">
               <Checkbox
                 checked={colorblindMode}
-                onCheckedChange={setColorblindMode}
+                onCheckedChange={(checked) => setColorblindMode(checked === true)}
                 className="border-gray-600"
               />
               <span className="text-sm text-gray-300">Enable colorblind friendly mode</span>
