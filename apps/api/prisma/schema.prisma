@@ -41,6 +41,7 @@ model User {
   createdBoards    Board[]        @relation("BoardCreator")
   boardMembers     BoardMember[]
   assignedCards    Card[]         @relation("CardAssignee")
+  cardMembers      CardMember[]
   comments         Comment[]
   chatParticipants Participant[]
   sentMessages     Message[]
