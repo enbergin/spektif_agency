@@ -10,8 +10,8 @@ export class BoardsService {
     // Check if user is member of organization
     const orgMember = await this.prisma.orgMember.findUnique({
       where: {
-        userId_orgId: {
-          orgId: organizationId,
+        organizationId_userId: {
+          organizationId,
           userId,
         },
       },
@@ -70,10 +70,10 @@ export class BoardsService {
                     },
                   },
                 },
-                orderBy: { position: 'asc' },
+                orderBy: { order: 'asc' },
               },
             },
-            orderBy: { position: 'asc' },
+            orderBy: { order: 'asc' },
           },
           members: {
             include: {
@@ -139,10 +139,10 @@ export class BoardsService {
                   },
                 },
               },
-              orderBy: { position: 'asc' },
+              orderBy: { order: 'asc' },
             },
           },
-          orderBy: { position: 'asc' },
+          orderBy: { order: 'asc' },
         },
         members: {
           include: {
@@ -205,10 +205,10 @@ export class BoardsService {
                   orderBy: { createdAt: 'asc' },
                 },
               },
-              orderBy: { position: 'asc' },
+              orderBy: { order: 'asc' },
             },
           },
-          orderBy: { position: 'asc' },
+          orderBy: { order: 'asc' },
         },
         members: {
           include: {
@@ -230,7 +230,7 @@ export class BoardsService {
     }
 
     // Check access permissions
-    const orgMember = board.organization?.members?.find(member => member.userId === userId);
+    const orgMember = board.organization.members[0];
     if (!orgMember) {
       throw new ForbiddenException('Not a member of this organization');
     }
@@ -250,12 +250,12 @@ export class BoardsService {
     }
 
     // Filter cards for CLIENT users
-    if (orgMember.role === 'CLIENT' && board.lists) {
+    if (orgMember.role === 'CLIENT') {
       board.lists = board.lists.map(list => ({
         ...list,
-        cards: list.cards?.filter(card =>
-          card.members?.some(member => member.userId === userId)
-        ) || [],
+        cards: list.cards.filter(card =>
+          card.members.some(member => member.userId === userId)
+        ),
       }));
     }
 
@@ -266,8 +266,8 @@ export class BoardsService {
     // Check if user can create boards in this organization
     const orgMember = await this.prisma.orgMember.findUnique({
       where: {
-        userId_orgId: {
-          orgId: dto.organizationId,
+        organizationId_userId: {
+          organizationId: dto.organizationId,
           userId,
         },
       },
@@ -282,7 +282,7 @@ export class BoardsService {
         organizationId: dto.organizationId,
         title: dto.title,
         description: dto.description,
-        // color: dto.color, // Field doesn't exist in current schema
+        color: dto.color,
         members: {
           create: {
             userId,
@@ -309,9 +309,9 @@ export class BoardsService {
     // Create default lists
     await this.prisma.list.createMany({
       data: [
-        { boardId: board.id, title: 'Yapılacak', position: 1 },
-        { boardId: board.id, title: 'Devam Ediyor', position: 2 },
-        { boardId: board.id, title: 'Bitti', position: 3 },
+        { boardId: board.id, title: 'Yapılacak', order: 1 },
+        { boardId: board.id, title: 'Devam Ediyor', order: 2 },
+        { boardId: board.id, title: 'Bitti', order: 3 },
       ],
     });
 
@@ -380,16 +380,16 @@ export class BoardsService {
     // Get next order
     const lastList = await this.prisma.list.findFirst({
       where: { boardId: dto.boardId },
-      orderBy: { position: 'desc' },
+      orderBy: { order: 'desc' },
     });
 
-    const nextOrder = lastList ? lastList.position + 1 : 1;
+    const nextOrder = lastList ? lastList.order + 1 : 1;
 
     return this.prisma.list.create({
       data: {
         boardId: dto.boardId,
         title: dto.title,
-        position: nextOrder,
+        order: nextOrder,
       },
     });
   }
@@ -453,7 +453,7 @@ export class BoardsService {
     return { message: 'List deleted successfully' };
   }
 
-  async reorderLists(boardId: string, listOrders: { id: string; position: number }[], userId: string) {
+  async reorderLists(boardId: string, listOrders: { id: string; order: number }[], userId: string) {
     // Check board access
     const boardMember = await this.prisma.boardMember.findUnique({
       where: {
