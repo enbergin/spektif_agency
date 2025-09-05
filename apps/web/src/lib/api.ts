@@ -7,8 +7,8 @@ class ApiClient {
     const session = await getSession()
     return {
       'Content-Type': 'application/json',
-      ...(session?.user?.backendToken && {
-        Authorization: `Bearer ${session.user.backendToken}`
+      ...((session?.user as any)?.backendToken && {
+        Authorization: `Bearer ${(session.user as any).backendToken}`
       })
     }
   }

@@ -96,7 +96,8 @@ export function useBoards(organizationId: string) {
   const [error, setError] = useState<string | null>(null)
 
   const fetchBoards = async () => {
-    if (!session?.user?.backendToken || !organizationId) {
+    const backendToken = (session?.user as any)?.backendToken
+    if (!backendToken || !organizationId) {
       setLoading(false)
       return
     }
