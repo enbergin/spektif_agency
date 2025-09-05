@@ -56,7 +56,7 @@ export class OrganizationsService {
             },
           },
         },
-        subscription: true,
+        subscriptions: true,
       },
     });
 
@@ -65,7 +65,7 @@ export class OrganizationsService {
     }
 
     // Check if user is member
-    const isMember = organization.members.some((m) => m.userId === userId);
+    const isMember = organization.members?.some((m) => m.userId === userId);
     if (!isMember) {
       throw new ForbiddenException('Not a member of this organization');
     }
