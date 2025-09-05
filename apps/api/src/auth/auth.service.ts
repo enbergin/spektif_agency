@@ -37,6 +37,7 @@ export class AuthService {
     const organization = await this.prisma.organization.create({
       data: {
         name: dto.organizationName,
+        slug: dto.organizationName.toLowerCase().replace(/\s+/g, '-'),
         members: {
           create: {
             userId: user.id,
@@ -129,7 +130,7 @@ export class AuthService {
       data: {
         name: googleUser.name,
         email: googleUser.email,
-        image: googleUser.picture,
+        avatar: googleUser.picture,
       },
     });
 
