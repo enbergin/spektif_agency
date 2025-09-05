@@ -80,9 +80,9 @@ export const authOptions: NextAuthOptions = {
     },
     async session({ session, token }) {
       if (token) {
-        session.user.id = token.id as string
-        session.user.organizations = token.organizations as any
-        session.user.backendToken = token.backendToken as string
+        (session.user as any).id = token.id as string
+        (session.user as any).organizations = token.organizations as any
+        (session.user as any).backendToken = token.backendToken as string
       }
       return session
     },
