@@ -109,7 +109,7 @@ class ApiClient {
     })
   }
 
-  async reorderLists(boardId: string, listOrders: { id: string; order: number }[]) {
+  async reorderLists(boardId: string, listOrders: { id: string; position: number }[]) {
     return this.request(`/boards/${boardId}/reorder-lists`, {
       method: 'POST',
       body: JSON.stringify({ listOrders }),

@@ -222,7 +222,7 @@ export function useBoard(boardId: string) {
       // Send the reorder request to backend
       const listOrders = newLists.map((list, index) => ({
         id: list.id,
-        order: index + 1
+        position: index + 1
       }))
       
       await apiClient.reorderLists(board.id, listOrders)

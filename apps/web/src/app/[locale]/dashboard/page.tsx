@@ -6,9 +6,11 @@ import { useEffect, useState } from 'react'
 import { useTranslations } from 'next-intl'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Calendar, MessageSquare, Users, BarChart3, Home, UserCheck, Building2, LogOut, Sparkles, Folder, MoreVertical, Image, Upload, X } from 'lucide-react'
+import { Calendar, MessageSquare, Users, BarChart3, Home, UserCheck, Building2, LogOut, Sparkles, Folder, MoreVertical, Image, Upload, X, Loader2 } from 'lucide-react'
 import { ThemeSwitcher } from '@/components/theme-switcher'
 import { LanguageSwitcher } from '@/components/language-switcher'
+import { apiClient } from '@/lib/api'
+import { toast } from 'sonner'
 
 export default function DashboardPage() {
   const { data: session, status } = useSession()
@@ -308,6 +310,7 @@ function TemplatesView({ session }: { session: any }) {
   const [loading, setLoading] = useState(true)
   const [showBoardSettings, setShowBoardSettings] = useState<string | null>(null)
   const [boardBackgrounds, setBoardBackgrounds] = useState<{[key: string]: string}>({})
+  const [isCreating, setIsCreating] = useState(false)
 
   // Load saved backgrounds from localStorage
   useEffect(() => {
@@ -336,6 +339,31 @@ function TemplatesView({ session }: { session: any }) {
       setShowBoardSettings(null)
     }
     reader.readAsDataURL(file)
+  }
+
+  // Handle board creation
+  const handleCreateBoard = async () => {
+    try {
+      setIsCreating(true)
+      const newBoard = await apiClient.createBoard({
+        title: 'Yeni Board',
+        description: 'Board açıklaması...',
+        color: '#4ADE80',
+        organizationId: 'spektif-agency' // Default organization
+      })
+      
+      // Add to boards list
+      setBoards(prev => [...prev, newBoard])
+      toast.success('Board başarıyla oluşturuldu!')
+      
+      // Navigate to the new board
+      window.location.href = `/tr/org/spektif-agency/board/${(newBoard as any).id}`
+    } catch (error) {
+      console.error('Board creation error:', error)
+      toast.error('Board oluşturulurken hata oluştu')
+    } finally {
+      setIsCreating(false)
+    }
   }
 
   // Predefined beautiful backgrounds
@@ -433,8 +461,12 @@ function TemplatesView({ session }: { session: any }) {
             Projelerinizi organize etmek için mevcut board'larınız
           </p>
         </div>
-        <Button>
-          <Folder className="w-4 h-4 mr-2" />
+        <Button onClick={handleCreateBoard} disabled={isCreating}>
+          {isCreating ? (
+            <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+          ) : (
+            <Folder className="w-4 h-4 mr-2" />
+          )}
           Yeni Board
         </Button>
       </div>
@@ -637,8 +669,12 @@ function TemplatesView({ session }: { session: any }) {
             <p className="text-muted-foreground mb-4">
               İlk board'unuzu oluşturarak başlayın
             </p>
-            <Button>
-              <Folder className="w-4 h-4 mr-2" />
+            <Button onClick={handleCreateBoard} disabled={isCreating}>
+              {isCreating ? (
+                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+              ) : (
+                <Folder className="w-4 h-4 mr-2" />
+              )}
               Yeni Board Oluştur
             </Button>
           </div>
