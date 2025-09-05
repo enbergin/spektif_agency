@@ -21,19 +21,20 @@ export class AuthController {
     return this.authService.login(dto);
   }
 
-  @Get('google')
-  @UseGuards(AuthGuard('google'))
-  @ApiOperation({ summary: 'Google OAuth login' })
-  async googleAuth(@Req() req) {
-    // Guard redirects to Google
-  }
+  // Google OAuth temporarily disabled for demo
+  // @Get('google')
+  // @UseGuards(AuthGuard('google'))
+  // @ApiOperation({ summary: 'Google OAuth login' })
+  // async googleAuth(@Req() req) {
+  //   // Guard redirects to Google
+  // }
 
-  @Get('google/callback')
-  @UseGuards(AuthGuard('google'))
-  @ApiOperation({ summary: 'Google OAuth callback' })
-  async googleAuthRedirect(@Req() req) {
-    return this.authService.googleLogin(req.user);
-  }
+  // @Get('google/callback')
+  // @UseGuards(AuthGuard('google'))
+  // @ApiOperation({ summary: 'Google OAuth callback' })
+  // async googleAuthRedirect(@Req() req) {
+  //   return this.authService.googleLogin(req.user);
+  // }
 
   @Get('me')
   @UseGuards(AuthGuard('jwt'))
