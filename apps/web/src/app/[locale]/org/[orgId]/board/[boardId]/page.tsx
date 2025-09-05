@@ -14,10 +14,13 @@ import {
   Users,
   Settings,
   Filter,
-  Share
+  Share,
+  Loader2
 } from 'lucide-react'
 import { DragDropBoard } from '@/components/board/drag-drop-board'
 import { ListData, CardData } from '@/components/board/droppable-list'
+import { useBoard } from '@/hooks/use-board'
+import { toast } from 'sonner'
 import { CardModal } from '@/components/board/card-modal'
 import { ThemeSwitcher } from '@/components/theme-switcher'
 import { LanguageSwitcher } from '@/components/language-switcher'
@@ -168,7 +171,21 @@ export default function BoardPage() {
   const locale = params.locale as string
   const t = useTranslations()
 
-  const [lists, setLists] = useState<ListData[]>(initialLists)
+  // Use real API hook instead of mock data
+  const { 
+    board, 
+    loading, 
+    error, 
+    createList, 
+    updateList, 
+    deleteList, 
+    createCard, 
+    updateCard, 
+    moveCard, 
+    deleteCard, 
+    updateListsOrder 
+  } = useBoard(boardId)
+
   const [selectedCard, setSelectedCard] = useState<CardData | null>(null)
   const [isCardModalOpen, setIsCardModalOpen] = useState(false)
   const [boardBackground, setBoardBackground] = useState<string>('')
@@ -183,8 +200,35 @@ export default function BoardPage() {
     }
   }, [boardId])
 
-  const handleListsChange = (newLists: ListData[]) => {
-    setLists(newLists)
+  // Convert board data to ListData format for drag-drop component
+  const lists: ListData[] = board?.lists?.map(list => ({
+    id: list.id,
+    title: list.title || list.name,
+    cards: list.cards?.map(card => ({
+      id: card.id,
+      title: card.title,
+      description: card.description || '',
+      labels: card.labels || [],
+      members: card.members || []
+    })) || []
+  })) || []
+
+  const handleListsChange = async (newLists: ListData[]) => {
+    try {
+      // Convert back to List format and update positions
+      const updatedLists = newLists.map((listData, index) => ({
+        id: listData.id,
+        title: listData.title,
+        name: listData.title,
+        position: index,
+        cards: listData.cards || []
+      }))
+      
+      await updateListsOrder(updatedLists as any)
+    } catch (error) {
+      console.error('Failed to update list positions:', error)
+      toast.error('Failed to save list positions')
+    }
   }
 
   const handleCardClick = (card: CardData) => {
@@ -197,29 +241,64 @@ export default function BoardPage() {
     setSelectedCard(null)
   }
 
-  const handleAddList = () => {
-    const newList: ListData = {
-      id: `list-${Date.now()}`,
-      title: 'New List',
-      cards: []
+  const handleAddList = async () => {
+    try {
+      await createList('New List')
+      toast.success('List created successfully!')
+    } catch (error) {
+      console.error('Failed to create list:', error)
+      toast.error('Failed to create list')
     }
-    setLists([...lists, newList])
   }
 
-  const handleAddCard = (listId: string) => {
-    const newCard: CardData = {
-      id: `card-${Date.now()}`,
-      title: 'New Card',
-      description: '',
-      labels: [],
-      members: []
+  const handleAddCard = async (listId: string) => {
+    try {
+      await createCard(listId, {
+        title: 'New Card',
+        description: ''
+      })
+      toast.success('Card created successfully!')
+    } catch (error) {
+      console.error('Failed to create card:', error)
+      toast.error('Failed to create card')
     }
-    const newLists = lists.map(list =>
-      list.id === listId
-        ? { ...list, cards: [...list.cards, newCard] }
-        : list
+  }
+
+  // Show loading state
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100">
+        <div className="text-center">
+          <Loader2 className="w-8 h-8 animate-spin mx-auto mb-4 text-blue-600" />
+          <p className="text-gray-600">Board yükleniyor...</p>
+        </div>
+      </div>
     )
-    setLists(newLists)
+  }
+
+  // Show error state
+  if (error) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-red-50 to-pink-100">
+        <div className="text-center">
+          <p className="text-red-600 mb-4">Board yüklenirken hata oluştu</p>
+          <Button onClick={() => window.location.reload()}>
+            Tekrar Dene
+          </Button>
+        </div>
+      </div>
+    )
+  }
+
+  // Show empty state if no board
+  if (!board) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-slate-100">
+        <div className="text-center">
+          <p className="text-gray-600">Board bulunamadı</p>
+        </div>
+      </div>
+    )
   }
 
   // Get the background image (custom or default)
@@ -251,7 +330,7 @@ export default function BoardPage() {
             </Link>
 
             <div className="flex items-center space-x-3">
-              <h1 className="text-lg font-semibold text-white">{mockBoard.title}</h1>
+              <h1 className="text-lg font-semibold text-white">{board.name || board.title || 'Board'}</h1>
               <Button variant="ghost" size="sm" className="text-white/80 hover:bg-white/10 w-8 h-8 p-0">
                 <Star className="w-4 h-4" />
               </Button>
